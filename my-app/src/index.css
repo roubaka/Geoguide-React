@@ -170,6 +170,8 @@ h4,
 h5,
 p {
   max-width: 900px;
+  /* Added personnally */
+  text-align: center;
 }
 
 p.copy {

@@ -1,3 +1,19 @@
 # Geoguide-React
 
-React Version of Geoguide Lausanne - git root from there
+React Version of Geoguide Lausanne  
+`git` root from there
+
+## Deploying
+
+- Adding these into `package.json` :
+
+```
+// ...
+    "scripts": {
+      // ...
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d build"
+    }
+
+```
+

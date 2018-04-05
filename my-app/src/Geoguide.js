@@ -1,21 +1,50 @@
 import React, { Component } from 'react';
-// import { Text } from 'react-native'; 
-import logo from './logo.svg';
+// import logo from './logo.svg';
+import Login from './login';
 import './Geoguide.css';
 import 'leaflet/dist/leaflet.css';
+
+import * as firebase from 'firebase';
+
 import $ from 'jquery';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
-// Main app content
+// Firebase configuration and initialization
+// const config = {
+//   apiKey: "AIzaSyDA9_FYCQfJKbyE_-V5tPB0Wdzv9pP3-2w",
+//   authDomain: "geoguide-react.firebaseapp.com",
+//   databaseURL: "https://geoguide-react.firebaseio.com",
+//   projectId: "geoguide-react",
+//   storageBucket: "",
+//   messagingSenderId: "920767176331"
+// };
+
+// firebase.initializeApp(config);
+
+// Setting a reference to the database service
+// var database = firebase.database();
+
+// -------------------------------------------------- //
+// RANDOM TESTS ON FIREBASE
+// function databaseTest(index, value) {
+//   firebase.database().ref(`/entrytest` + index).set({
+//     fieldtest: value
+//   });
+// }
+//
+// for (var i=0 ; i<5 ; i++){
+//   databaseTest(i, "lalala"); // entering a value one the database accordint to the function
+// }
+//
+// firebase.database().ref('/entrytest').child('childEntry').set({
+//   myentry: "ciao"
+// });
+
+
+// -------------------------------------------------- //
+
+// Main app content to be injected in
 var Appcontent;
-
-var test = true;
-
-// HTML template for Map
-var mapSection =
-  <div>
-    <div>Ceci est une carte</div>
-  </div>;
 
 // const { Map: LeafletMap, TileLayer, Marker, Popup } = ReactLeaflet
 
@@ -183,6 +212,7 @@ class Geoguide extends Component {
   constructor(props){
     super(props);
     this.state = {
+      userLogged : false,
       currentPage : optionsArray[0],
       currentStop : null
     }
@@ -193,29 +223,30 @@ class Geoguide extends Component {
   }
 
   showSpotContent = (e) => {
-    var k = e.target.value;
     this.setState({currentPage : 'PostContent'})
-    this.setState({currentStop: k})
+    this.setState({currentStop: e.target.value})
+    // e.target.value
+  }
+
+  login = () => {
+    this.setState({userLogged : true})
   }
 
   render() {
-    if(test === true){
+    if(this.state.userLogged){
       Appcontent =
       <div className="App">
         <header>Here goes the header and main menu!</header>
         <Navbar
-          itemList={optionsArray} onClick={this.changePage}
+          itemList = {optionsArray} onClick = {this.changePage}
         />
         <PageContent
-          content = {this.state.currentPage} onClick={this.showSpotContent} stop={this.state.currentStop}
+          content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
         />
       </div>
     } else {
-      // Stupid test for condition
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
+      Appcontent =
+      <Login onClick={this.login}/>
     };
     return (Appcontent);
   }
