@@ -20,47 +20,43 @@ class Login extends Component {
   constructor(props){
     super(props);
     this.state = {
+      // Contains username
       userid:null,
-      validName:false,
+      // Boolean if username is valid
+      existingName:false,
+      // Boolean for cleaning the on first focus
       focusedInput:false,
     }
   }
 
   checkingDb = () => {
-    var maxi = this.validateName
-    var userTyping = this.state.userid;
-    var nameIsValid = true;
     database.ref('/users').once('value', snap => {
       snap.forEach(childSnapshot => {
         var usernameList = childSnapshot.child('/username').val();
-        if(usernameList == userTyping){
-          console.log('already existing ID');
-          nameIsValid = false;
-          this.setState({validName:nameIsValid})
+        if(usernameList == this.state.userid){
+          this.setState({existingName:false})
         }
       })
     });
   }
 
   handleFocus = (e) => {
+    if(this.state.focusedInput == false){
     e.target.value = '';
-  }
-
-  handleMouseOut = () => {
-    this.setState({validName:this.checkingDb()})
+    this.setState({focusedInput:true})
+    }
   }
 
   handleChange = (e) => {
-    this.setState({userid:e.target.value, focusedInput:true, validName:true})
-  }
+    this.setState({userid:e.target.value, existingName:true})
+    this.checkingDb()
+    if(this.state.userid == ''){
 
-  validateName = (nameIsValid) => {
-    this.setState({validName:nameIsValid})
-    console.log(nameIsValid);
+    }
   }
 
   handleClick = () => {
-    if(this.state.validName){
+    if(this.state.existingName){
       database.ref('/users').push({
         username:this.state.userid
       });
@@ -72,8 +68,10 @@ class Login extends Component {
 
   render(){
     // Condiditionnal rendering for user entry
-    if(this.state.focusedInput){
-      var validation = this.state.validName ? (
+    var validation;
+    if(this.state.focusedInput && this.state.userid != null){
+      console.log(this.state.userid);
+      validation = this.state.existingName ? (
         <span>Ce nom d'utilisateur est disponible</span>
       ) : (
         <span>Ce nom d'utilisateur existe déjà</span>
@@ -85,7 +83,7 @@ class Login extends Component {
         <h2>Bienvenue dans le Géoguide Lausanne</h2>
         <span>Avant de commencer il faut créer un nom d'utilisateur</span>
         <input type="text" required = "true" defaultValue = "Entrez votre nom"
-          onChange = {this.handleChange} onFocus = {this.handleFocus} onMouseOut = {this.handleMouseOut}>
+          onChange = {this.handleChange} onFocus = {this.handleFocus}>
         </input>
         <button onClick = {this.handleClick}>
           Login
@@ -94,6 +92,6 @@ class Login extends Component {
       </div>
     )
   }
-}
+
 
 export default Login;
