@@ -213,6 +213,7 @@ class Geoguide extends Component {
     super(props);
     this.state = {
       userLogged : false,
+      username : null,
       currentPage : optionsArray[0],
       currentStop : null
     }
@@ -228,8 +229,9 @@ class Geoguide extends Component {
     // e.target.value
   }
 
-  login = () => {
-    this.setState({userLogged : true})
+  login = (username,userid) => {
+    this.setState({userLogged:true, username:username, userid:userid})
+    console.log(username, userid);
   }
 
   render() {

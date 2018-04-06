@@ -21,11 +21,11 @@ class Login extends Component {
     super(props);
     this.state = {
       // Contains username
-      userid:null,
+      username:null,
       // Boolean if username is valid
-      existingName:false,
-      // Boolean for cleaning the on first focus
-      focusedInput:false,
+      validName:false,
+      // Boolean for cleaning the on first focus and displaying page status
+      focusedInput:false
     }
   }
 
@@ -33,8 +33,11 @@ class Login extends Component {
     database.ref('/users').once('value', snap => {
       snap.forEach(childSnapshot => {
         var usernameList = childSnapshot.child('/username').val();
-        if(usernameList == this.state.userid){
-          this.setState({existingName:false})
+        if(usernameList == this.state.username){
+          this.setState({validName:false})
+        } else
+        if(this.state.username == ''){
+          this.setState({focusedInput:false})
         }
       })
     });
@@ -42,37 +45,35 @@ class Login extends Component {
 
   handleFocus = (e) => {
     if(this.state.focusedInput == false){
-    e.target.value = '';
-    this.setState({focusedInput:true})
+    e.target.value = ''
     }
   }
 
   handleChange = (e) => {
-    this.setState({userid:e.target.value, existingName:true})
+    this.setState({username:e.target.value, validName:true, focusedInput:true})
     this.checkingDb()
-    if(this.state.userid == ''){
-
-    }
   }
 
   handleClick = () => {
-    if(this.state.existingName){
-      database.ref('/users').push({
-        username:this.state.userid
+    if(this.state.validName){
+      // Pushing new username into db - Store it into a variable
+      var newUser = database.ref('/users').push({
+        username:this.state.username
       });
-      this.props.onClick();
+      // Triggers login function inherited from Geoguide Component
+      this.props.onClick(this.state.username,newUser.key);
     } else {
-      alert("HEHO");
+      alert("Ce nom d'utilisateur existe déjà, est-ce bien toi?");
     }
   }
 
   render(){
     // Condiditionnal rendering for user entry
     var validation;
-    if(this.state.focusedInput && this.state.userid != null){
-      console.log(this.state.userid);
-      validation = this.state.existingName ? (
-        <span>Ce nom d'utilisateur est disponible</span>
+    var style;
+    if(this.state.focusedInput && this.state.username != null){
+      if (this.state.validName == true)
+      validation = <span>Ce nom d'utilisateur est disponible</span>
       ) : (
         <span>Ce nom d'utilisateur existe déjà</span>
       );
@@ -83,6 +84,7 @@ class Login extends Component {
         <h2>Bienvenue dans le Géoguide Lausanne</h2>
         <span>Avant de commencer il faut créer un nom d'utilisateur</span>
         <input type="text" required = "true" defaultValue = "Entrez votre nom"
+          style = {style}
           onChange = {this.handleChange} onFocus = {this.handleFocus}>
         </input>
         <button onClick = {this.handleClick}>
@@ -92,6 +94,6 @@ class Login extends Component {
       </div>
     )
   }
-
+}
 
 export default Login;
