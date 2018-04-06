@@ -76,8 +76,7 @@ class Login extends Component {
         snap.forEach(childSnapshot => {
           var usernameList = childSnapshot.child('/username').val();
           if (usernameList == this.state.username){
-            console.log(usernameList);
-            console.log(childSnapshot.key);
+            this.props.onClick(this.state.username,childSnapshot.key)
           }
         })
       })
