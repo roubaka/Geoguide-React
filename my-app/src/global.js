@@ -9,5 +9,3 @@ var options = {
 // var pagesListArray = Object.keys(options);
 
 export default options;
-
-// Converting options keys to an array in order to map() through it

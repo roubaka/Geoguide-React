@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 
-import Login from './login';
-import './Geoguide.css';
+import '../Geoguide.css';
 import 'leaflet/dist/leaflet.css';
 
 import * as firebase from 'firebase';

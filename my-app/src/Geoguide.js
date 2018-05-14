@@ -8,8 +8,14 @@ import React, { Component } from 'react';
 import options from './global.js';
 
 // Import local React components
-import Login from './login';
-import Navbar from './navbar';
+import Login from './pageComponents/login';
+import Navbar from './pageComponents/navbar';
+import Welcome from './pageComponents/welcome';
+import Score from './pageComponents/score';
+import Themes from './pageComponents/themes';
+import Autres from './pageComponents/autres';
+
+// Import style
 import './Geoguide.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -24,6 +30,7 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 // Data manipulation //
 // -------------------------------------------------- //
 
+// Converting options keys to an array in order to map() through it
 var pagesListArray = Object.keys(options);
 
 // -------------------------------------------------- //
@@ -58,13 +65,6 @@ class PostContent extends Component{
   }
 }
 
-// Classes for main content
-class Welcome extends Component {
-  render(){
-    return <div>This is the Welcome page</div>
-  }
-}
-
 class Postes extends Component{
   // constructor(props){
   //   super(props);
@@ -76,30 +76,6 @@ class Postes extends Component{
           return <li key = {i} value = {i+1}>{stops[i].title}</li>
         })}
       </ul>
-    )
-  }
-}
-
-class Score extends Component{
-  render(){
-    return(
-      <div>This is de Score page, hell yeah!</div>
-    )
-  }
-}
-
-class Themes extends Component{
-  render(){
-    return(
-      <div>C'est la page des thèmes, c'est encore un peu vague</div>
-    )
-  }
-}
-
-class Autres extends Component{
-  render(){
-    return(
-      <div>On ne sait pas encore quoi mettre ici?!</div>
     )
   }
 }
@@ -190,11 +166,11 @@ class Geoguide extends Component {
       Appcontent =
       <div className="App">
         <header>Here goes the header and main menu!</header>
-        <Navbar
-          itemList = {pagesListArray} onClick = {this.changePage}
-        />
         <PageContent
           content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
+        />
+        <Navbar
+          itemList = {pagesListArray} onClick = {this.changePage}
         />
       </div>
     } else {
