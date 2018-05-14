@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 
+import {Footer} from 'react-materialize';
 import '../Geoguide.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -28,16 +29,16 @@ class Navbar extends Component {
 
   render() {
     var navbarItem = pagesListArray.map(function(item, i){
-       return <li key = {i}>{options[item].title}</li>;
+       return <td key = {i}>{options[item].title}</td>;
     })
     // Array version for mapping through the options
     // var navbarItem = options.map(function(item, i){
     //   return <li key = {i}> {item.title} </li>;
     // })
     return(
-      <ul onClick = {this.props.onClick}>
-        {navbarItem}
-      </ul>
+        <tr onClick = {this.props.onClick} className = 'footer'>
+          {navbarItem}
+        </tr>
     )
   }
 }

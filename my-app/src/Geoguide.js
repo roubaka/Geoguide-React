@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 
 // Importing global variables
-import options from './global.js';
+import options from './data/options.js';
+import stops from './data/stops.js';
 
 // Import local React components
 import Login from './pageComponents/login';
@@ -39,14 +40,6 @@ var pagesListArray = Object.keys(options);
 
 // Main app content to be injected in
 var Appcontent;
-
-// Array containing list of spots and their content
-var stops = [
-  {title:'poste 1',content:'contenu du poste 1'},
-  {title:'poste 2',content:'contenu du poste 2'},
-  {title:'poste 3',content:'contenu du poste 3'},
-  {title:'poste 4',content:'contenu du poste 4'},
-];
 
 // Spot specific Classes
 class PostContent extends Component{
@@ -165,7 +158,7 @@ class Geoguide extends Component {
     if(this.state.userLogged){
       Appcontent =
       <div className="App">
-        <header>Here goes the header and main menu!</header>
+        <header>Here goes the header</header>
         <PageContent
           content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
         />
