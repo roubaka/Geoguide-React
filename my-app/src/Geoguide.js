@@ -1,52 +1,37 @@
+// -------------------------------------------------- //
+// Importing libraries //
+// -------------------------------------------------- //
+// Import React
 import React, { Component } from 'react';
-// import logo from './logo.svg';
+
+// Importing global variables
+import options from './global.js';
+
+// Import local React components
 import Login from './login';
+import Navbar from './navbar';
 import './Geoguide.css';
 import 'leaflet/dist/leaflet.css';
 
+// Import firebase
 import * as firebase from 'firebase';
 
+// Import jquery and Leaflet libraries
 import $ from 'jquery';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
-// Firebase configuration and initialization
-// const config = {
-//   apiKey: "AIzaSyDA9_FYCQfJKbyE_-V5tPB0Wdzv9pP3-2w",
-//   authDomain: "geoguide-react.firebaseapp.com",
-//   databaseURL: "https://geoguide-react.firebaseio.com",
-//   projectId: "geoguide-react",
-//   storageBucket: "",
-//   messagingSenderId: "920767176331"
-// };
+// -------------------------------------------------- //
+// Data manipulation //
+// -------------------------------------------------- //
 
-// firebase.initializeApp(config);
-
-// Setting a reference to the database service
-// var database = firebase.database();
+var pagesListArray = Object.keys(options);
 
 // -------------------------------------------------- //
-// RANDOM TESTS ON FIREBASE
-// function databaseTest(index, value) {
-//   firebase.database().ref(`/entrytest` + index).set({
-//     fieldtest: value
-//   });
-// }
-//
-// for (var i=0 ; i<5 ; i++){
-//   databaseTest(i, "lalala"); // entering a value one the database accordint to the function
-// }
-//
-// firebase.database().ref('/entrytest').child('childEntry').set({
-//   myentry: "ciao"
-// });
-
-
+// Rendering app components //
 // -------------------------------------------------- //
 
 // Main app content to be injected in
 var Appcontent;
-
-// const { Map: LeafletMap, TileLayer, Marker, Popup } = ReactLeaflet
 
 // Array containing list of spots and their content
 var stops = [
@@ -55,41 +40,6 @@ var stops = [
   {title:'poste 3',content:'contenu du poste 3'},
   {title:'poste 4',content:'contenu du poste 4'},
 ];
-
-// Options available in the menu
-var options = {
-  Bienvenue:{title:'Bienvenue'},
-  Carte:{title:'Carte'},
-  Postes:{title:'Postes'},
-  Score:{title:'Score'},
-  Thèmes:{title:'Thèmes'},
-  Autres:{title:'Autres'}
-};
-
-// Converting options keys to an array in order to map() through it
-var optionsArray = Object.keys(options);
-
-// Navbar section
-class Navbar extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  render() {
-    var navbarItem = optionsArray.map(function(item, i){
-       return <li key = {i}>{options[item].title}</li>;
-    })
-    // Array version
-    // var navbarItem = options.map(function(item, i){
-    //   return <li key = {i}> {item.title} </li>;
-    // })
-    return(
-      <ul onClick = {this.props.onClick}>
-        {navbarItem}
-      </ul>
-    )
-  }
-}
 
 // Spot specific Classes
 class PostContent extends Component{
@@ -212,9 +162,10 @@ class Geoguide extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userLogged : false,
+      // TODO change that in the end!
+      userLogged : true,
       username : null,
-      currentPage : optionsArray[0],
+      currentPage : pagesListArray[1],
       currentStop : null
     }
   }
@@ -240,7 +191,7 @@ class Geoguide extends Component {
       <div className="App">
         <header>Here goes the header and main menu!</header>
         <Navbar
-          itemList = {optionsArray} onClick = {this.changePage}
+          itemList = {pagesListArray} onClick = {this.changePage}
         />
         <PageContent
           content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
@@ -253,7 +204,5 @@ class Geoguide extends Component {
     return (Appcontent);
   }
 }
-
-
 
 export default Geoguide;

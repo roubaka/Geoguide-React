@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Forms, Buttons} from 'react-bootstrap';
 import * as firebase from 'firebase';
 
 // Firebase configuration and initialization
@@ -16,6 +17,7 @@ firebase.initializeApp(config);
 // Setting a reference to the database service
 var database = firebase.database();
 
+// Class Login as main component for login page
 class Login extends Component {
   constructor(props){
     super(props);
@@ -24,7 +26,7 @@ class Login extends Component {
       username:null,
       // Boolean if username is valid
       validName:false,
-      // Boolean for cleaning the on first focus and displaying page status
+      // Boolean for cleaning the input on first focus and displaying page status
       focusedInput:false
     }
   }
@@ -72,6 +74,9 @@ class Login extends Component {
       this.props.onClick(this.state.username,newUser.key);
     // If username already exsists in db
     } else {
+      // database.ref() gets to db root
+      // once triggers event once on value change
+      // snap is a snapShot of the databse at this point
       database.ref('/users').once('value', snap => {
         snap.forEach(childSnapshot => {
           var usernameList = childSnapshot.child('/username').val();
@@ -88,10 +93,13 @@ class Login extends Component {
     // Condiditionnal rendering for user entry
     var validation;
     var inputStyling;
+    // check if user has focused and name input isn't empty
     if(this.state.focusedInput && this.state.username != null){
       if (this.state.validName == true){
+        // show username as valid
         validation = <span>Ce nom d'utilisateur est disponible</span>
       } else {
+        // show username as invalid
         validation = <span>Ce nom d'utilisateur existe déjà,<br />êtes vous sûr que c'est bien vous?</span>
         inputStyling = {backgroundColor:'red'};
       }
@@ -100,7 +108,7 @@ class Login extends Component {
     return (
       <div>
         <h2>Bienvenue dans le Géoguide Lausanne</h2>
-        <span>Avant de commencer il faut créer un nom d'utilisateur</span>
+        <span>Avant de commencer, il faut créer un nom d'utilisateur</span>
         <input type="text" required = "true" defaultValue = "Entrez votre nom"
           style = {inputStyling}
           onChange = {this.handleChange} onFocus = {this.handleFocus}>
