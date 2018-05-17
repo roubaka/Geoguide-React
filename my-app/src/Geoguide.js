@@ -4,9 +4,13 @@
 // Import React
 import React, { Component } from 'react';
 
-// Importing global variables
-import options from './data/options.js';
-import stops from './data/stops.js';
+// Import firebase
+import * as firebase from 'firebase';
+
+// Import jquery and Leaflet libraries
+import L from 'react-leaflet'; //to avoid conflict with webpack require
+import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
+import $ from 'jquery';
 
 // Import local React components
 import Login from './pageComponents/login';
@@ -14,18 +18,16 @@ import Navbar from './pageComponents/navbar';
 import Welcome from './pageComponents/welcome';
 import Score from './pageComponents/score';
 import Themes from './pageComponents/themes';
-import Autres from './pageComponents/autres';
+import Others from './pageComponents/others';
+
+// Importing global variables
+import options from './data/options.js';
+// import stops from './data/stops.js';
+import stopsData from './data/stops_content_min.js';
 
 // Import style
 import './Geoguide.css';
 import 'leaflet/dist/leaflet.css';
-
-// Import firebase
-import * as firebase from 'firebase';
-
-// Import jquery and Leaflet libraries
-import $ from 'jquery';
-import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
 // -------------------------------------------------- //
 // Data manipulation //
@@ -33,6 +35,12 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
 // Converting options keys to an array in order to map() through it
 var pagesListArray = Object.keys(options);
+// var stopsArray = Object.keys(stopsData);
+
+console.log(stopsData);
+console.log(pagesListArray);
+
+// console.log(stopsArray);
 
 // -------------------------------------------------- //
 // Rendering app components //
@@ -41,32 +49,97 @@ var pagesListArray = Object.keys(options);
 // Main app content to be injected in
 var Appcontent;
 
-// Spot specific Classes
-class PostContent extends Component{
+class Quiz extends Component{
   constructor(props){
     super(props);
-    this.state = {
-      currentStop : null
-    }
   }
 
   render(){
-    var currentStop = this.props.stop
-    return (
-      <div>yeah ceci est le {stops[currentStop-1].content}</div>
+
+    return(
+      <div>
+        Hey! I'm a quiz!
+      </div>
     )
   }
 }
 
-class Postes extends Component{
+// Spot specific Classes
+class StopContent extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      // currentStop : null
+      content : 'basic'
+    }
+  }
+
+  extendContent = () => {
+    this.setState({content:'extended'})
+  }
+
+  quizContent = () => {
+    this.setState({content:'quiz'})
+  }
+
+  render(){
+    // Compensate for decay in values - initializing at 6
+    var arrayDecay = 6
+    // storing id stop in currentData
+    var currentData = stopsData[this.props.stop - arrayDecay]
+    // console.log(currentData[this.props.stop].img_swip1)
+    var postContent;
+      // Conditional rendering for StopContent
+
+      // Rendering basic content
+      if(this.state.content == 'basic'){
+        postContent =
+          <div>
+            <h1>{currentData.title}</h1>
+            <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'300px'}/>
+            <p>{currentData.text1_p1}</p>
+            <p>{currentData.text1_p2}</p>
+            {/* buttons */}
+            <button onClick = {this.extendContent}>{currentData.interaction} </button><br/>
+            <button onClick = {this.props.showMap} >{currentData.followtrack}</button>
+          </div>
+      // Rendering extended content
+      } else if (this.state.content == 'extended'){
+        postContent =
+          <div>
+            <h1>{currentData.title}</h1>
+            <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'300px'}/>
+            <p>{currentData.text1_p1}</p>
+            <p>{currentData.text1_p2}</p>
+            {/* <img src = {require(`./img/${currentData[this.props.stop].img_swip1}`)} width = {'auto'} height = {'300px'}/> */}
+            <p>{currentData.text2_p1}</p>
+            <p>{currentData.text2_p2}</p>
+            <span>{currentData.img_swip_legend}</span>
+            {/* buttons */}
+            <button onClick = {this.quizContent} >Je veux participer au Quiz!</button><br/>
+            <button onClick = {this.props.showMap} >{currentData.followtrack}</button>
+          </div>
+      // Rendering quiz content
+      } else if (this.state.content == 'quiz'){
+        postContent =
+          <div>
+            Ceci est un maquessi quiz
+          </div>
+      }
+      return(postContent);
+  }
+}
+
+// List of
+class Stops extends Component{
   // constructor(props){
   //   super(props);
   // }
   render(){
     return (
       <ul onClick={this.props.onClick}>
-        {stops.map(function(item, i){
-          return <li key = {i} value = {i+1}>{stops[i].title}</li>
+        {stopsData.map(function(item, i){
+          return <li key = {i} value = {stopsData[i].id}>{`${stopsData[i].id} - ${stopsData[i].name}`}</li>
         })}
       </ul>
     )
@@ -83,11 +156,14 @@ class PageContent extends Component {
     this.refs.map.leafletElement.locate()
   }
 
+  // Defining which page to render into PageContent Component
   render(){
+    // Rendering Welcome page
     if(this.props.content == 'Bienvenue'){
       return(
         <Welcome/>
       )
+    // Rendering Map page
     } else if (this.props.content == 'Carte'){
     return(
         <Map id='map' ref='map' center={[45.0,6.5]} zoom={5} onClick={this.handleClick} onLocationFound={function(e){
@@ -101,25 +177,32 @@ class PageContent extends Component {
           />
         </Map>
     )
-    } else if (this.props.content == 'Postes'){
+    // Rendering Stops page
+
+  } else if (this.props.content == 'Postes'){
       return(
-        <Postes onClick = {this.props.onClick}/>
+        // onClick props only has parameters when Geoguide-currentPage = Postes
+        <Stops onClick = {this.props.onClick}/>
       )
-    } else if (this.props.content == 'PostContent'){
+    // Rendering StopContent page
+    } else if (this.props.content == 'StopContent'){
       return(
-        <PostContent stop={this.props.stop}/>
+        <StopContent showMap = {this.props.showMap} stop={this.props.stop}/>
       )
+    // Rendering Score page
     } else if(this.props.content == 'Score'){
       return (
         <Score/>
       )
-    } else if(this.props.content == 'Thèmes'){
+    // Rendering Themes page
+    } else if(this.props.content == 'Themes'){
       return(
         <Themes/>
       )
+    // Rendering Others page
     } else if(this.props.content == 'Autres'){
       return(
-        <Autres/>
+        <Others/>
       )
     }
   }
@@ -139,12 +222,18 @@ class Geoguide extends Component {
     }
   }
 
+  showMap = () => {
+    this.setState({currentPage : 'Carte'})
+    this.setState({currentStop : null})
+  }
+
   changePage = (e) => {
     this.setState({currentPage : e.target.innerHTML})
+    this.setState({currentStop : null})
   }
 
   showSpotContent = (e) => {
-    this.setState({currentPage : 'PostContent'})
+    this.setState({currentPage : 'StopContent'})
     this.setState({currentStop: e.target.value})
     // e.target.value
   }
@@ -160,7 +249,7 @@ class Geoguide extends Component {
       <div className="App">
         <header>Here goes the header</header>
         <PageContent
-          content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
+          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}

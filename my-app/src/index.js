@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import $ from 'jquery';
+import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import Geoguide from './Geoguide';
 import registerServiceWorker from './registerServiceWorker';
 

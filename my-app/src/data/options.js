@@ -1,4 +1,5 @@
 // Listing available in the navbar
+// Object keys and title field in french cause in the layout
 var options = {
   Bienvenue:{title:'Bienvenue'},
   Carte:{title:'Carte'},

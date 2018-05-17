@@ -17,4 +17,8 @@ React Version of Geoguide Lausanne
 
 ```
 ## CSV to JSON data conversion
-https://csvjson.com/csv2json
+[Specific converter] (http://www.convertcsv.com/csv-to-json.htm)
+
+*NB* Use "CSV to JSON"
+
+[Generic converter](https://csvjson.com/csv2json)

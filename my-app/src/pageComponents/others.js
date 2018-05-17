@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
 import $ from 'jquery';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
-class Autres extends Component{
+class Others extends Component{
   render(){
     return(
       <div>On ne sait pas encore quoi mettre ici?!</div>
@@ -17,4 +17,4 @@ class Autres extends Component{
   }
 }
 
-export default Autres;
+export default Others;
