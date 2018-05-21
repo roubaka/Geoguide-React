@@ -70,7 +70,8 @@ class StopContent extends Component{
     super(props);
     this.state = {
       // currentStop : null
-      content : 'basic'
+      content : 'basic',
+      answeredQuiz : false
     }
   }
 
@@ -81,6 +82,18 @@ class StopContent extends Component{
   quizContent = () => {
     this.setState({content:'quiz'})
   }
+
+  handleQuiz = () => {
+    this.setState({answeredQuiz : true})
+  }
+
+  shuffleAnswers = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
   render(){
     // Compensate for decay in values - initializing at 6
@@ -121,9 +134,52 @@ class StopContent extends Component{
           </div>
       // Rendering quiz content
       } else if (this.state.content == 'quiz'){
+
+        // Style for answers
+        var wrongAnser = {
+          backgroundColor : 'red'
+        }
+        var rightAnswer = {
+          backgroundColor : 'lightgreen'
+        }
+
+        // Preparing answers
+        var answers = []
+        for(let i = 0; i < 4; i++){
+          let answerStyle;
+          // If user answered question change style
+          if(this.state.answeredQuiz){
+            // Styling for the various answers
+            // If current answer is the right one, set style to right
+            if(i+1 == currentData.correct){
+              answerStyle = rightAnswer;
+              // Otherwise set style to wrong
+            } else {
+              answerStyle = wrongAnser;
+            }
+          }
+          // In any case, render td + button
+          var answerTag = <td><button style = {answerStyle} answerNumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
+          answers.push(answerTag)
+        }
+        // Shuffling the answers
+        // this.shuffleAnswers(answers);
+
         postContent =
           <div>
-            Ceci est un maquessi quiz
+            <table>
+              <tr>
+                <th width = '400px' colspan = '2'>{currentData.question}</th>
+              </tr>
+              <tr>
+                {answers[0]}
+                {answers[1]}
+              </tr>
+              <tr>
+                {answers[2]}
+                {answers[3]}
+              </tr>
+            </table>
           </div>
       }
       return(postContent);
