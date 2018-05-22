@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
 
 // Import jquery and Leaflet libraries
 import L from 'react-leaflet'; //to avoid conflict with webpack require
-import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
+import {Map, TileLayer, Marker, Popup, Polyline} from 'react-leaflet';
 import $ from 'jquery';
 
 // Import local React components
@@ -22,8 +22,9 @@ import Others from './pageComponents/others';
 
 // Importing global variables
 import options from './data/options.js';
-// import stops from './data/stops.js';
-import stopsData from './data/stops_content_min.js';
+// import tracks from 'json!../data/tracks.geojson';
+// import stopsData from './data/stops_content_min.js';
+import stopsData from './data/stops_content_min2.js';
 
 // Import style
 import './Geoguide.css';
@@ -104,7 +105,7 @@ class StopContent extends Component{
     var postContent;
       // Conditional rendering for StopContent
 
-      // Rendering basic content
+      // 1) Rendering basic content
       if(this.state.content == 'basic'){
         postContent =
           <div>
@@ -116,7 +117,7 @@ class StopContent extends Component{
             <button onClick = {this.extendContent}>{currentData.interaction} </button><br/>
             <button onClick = {this.props.showMap} >{currentData.followtrack}</button>
           </div>
-      // Rendering extended content
+      // 2) Rendering extended content
       } else if (this.state.content == 'extended'){
         postContent =
           <div>
@@ -132,7 +133,7 @@ class StopContent extends Component{
             <button onClick = {this.quizContent} >Je veux participer au Quiz!</button><br/>
             <button onClick = {this.props.showMap} >{currentData.followtrack}</button>
           </div>
-      // Rendering quiz content
+      // 3) Rendering quiz content
       } else if (this.state.content == 'quiz'){
 
         // Style for answers
@@ -157,13 +158,14 @@ class StopContent extends Component{
             } else {
               answerStyle = wrongAnser;
             }
+          } else {
+            // If the user hasn't answered quiz, shuffle the answers
+            this.shuffleAnswers(answers);
           }
           // In any case, render td + button
           var answerTag = <td><button style = {answerStyle} answerNumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
           answers.push(answerTag)
         }
-        // Shuffling the answers
-        // this.shuffleAnswers(answers);
 
         postContent =
           <div>
@@ -222,7 +224,7 @@ class PageContent extends Component {
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
     return(
-        <Map id='map' ref='map' center={[45.0,6.5]} zoom={5} onClick={this.handleClick} onLocationFound={function(e){
+        <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
           console.log(e.latlng);
           console.log(e.accuracy);
           console.log(e.time);

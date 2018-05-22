@@ -221,7 +221,7 @@ var stopsData = [
    "answer1": "La Louve se jette dans le Flon ",
    "answer2": "La Louve passe sous la place de l'Europe ",
    "answer3": "Le quartier du Flon doit son nom à la rivière qui passe dessous ",
-   "answer4": "",
+   "answer4": "'Place de la Palud' signifie 'place du marais'",
    "correct": "2",
    "img_title": "poste_12.jpg",
    "img_swip1": "fig_12a.jpg",
