@@ -213,6 +213,11 @@ class PageContent extends Component {
     this.refs.map.leafletElement.locate()
   }
 
+  loadGeometry = () => {
+    track.features.forEach(function(segment){
+      return segment.geometry.coordinates;
+  })}
+
   // Defining which page to render into PageContent Component
   render(){
     // Rendering Welcome page
@@ -223,17 +228,17 @@ class PageContent extends Component {
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
 
+      // trackComplete variable for storing track with correct coordinates
+      var trackComplete = [];
       // Reversing latlng coordinates
-      // var trackreversed = [];
-      // track.features.forEach(function(segment){
-      //   segment.geometry.coordinates.forEach(function(point){
-      //     trackreversed.push(point.reverse());
-      //   });
-      // })
       track.features.forEach(function(segment){
-        console.log(segment.geometry.coordinates);
-      })
-      // console.log(track.features[0].geometry.coordinates);
+        // forEach feature, reverse each point coordinates
+        segment.geometry.coordinates.forEach(function(point){
+          point.reverse();
+        })
+        // Add reversed coordinates into trackComplete variable
+        trackComplete.push(segment.geometry.coordinates);
+      });
 
     return(
         <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
@@ -245,12 +250,7 @@ class PageContent extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
-          <Polyline color="red" positions={track.features.forEach(function(segment){
-            return segment.geometry.coordinates;
-          })}/>
-          {/* <Polyline color="lime" positions={function(){
-            track.features[13].geometry.coordinates}
-          }/> */}
+          <Polyline color="red" positions={trackComplete}/>
         </Map>
     )
     // Rendering Stops page
