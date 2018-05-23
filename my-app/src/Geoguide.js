@@ -22,9 +22,8 @@ import Others from './pageComponents/others';
 
 // Importing global variables
 import options from './data/options.js';
-// import tracks from 'json!../data/tracks.geojson';
-// import stopsData from './data/stops_content_min.js';
-import stopsData from './data/stops_content_min2.js';
+import stopsData from './data/stops_content_min.js';
+import track from './geodata/track.js';
 
 // Import style
 import './Geoguide.css';
@@ -223,6 +222,19 @@ class PageContent extends Component {
       )
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
+
+      // Reversing latlng coordinates
+      // var trackreversed = [];
+      // track.features.forEach(function(segment){
+      //   segment.geometry.coordinates.forEach(function(point){
+      //     trackreversed.push(point.reverse());
+      //   });
+      // })
+      track.features.forEach(function(segment){
+        console.log(segment.geometry.coordinates);
+      })
+      // console.log(track.features[0].geometry.coordinates);
+
     return(
         <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
           console.log(e.latlng);
@@ -233,6 +245,12 @@ class PageContent extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
+          <Polyline color="red" positions={track.features.forEach(function(segment){
+            return segment.geometry.coordinates;
+          })}/>
+          {/* <Polyline color="lime" positions={function(){
+            track.features[13].geometry.coordinates}
+          }/> */}
         </Map>
     )
     // Rendering Stops page
