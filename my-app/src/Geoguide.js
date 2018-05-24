@@ -8,8 +8,9 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
 // Import jquery and Leaflet libraries
-import L from 'react-leaflet'; //to avoid conflict with webpack require
-import {Map, TileLayer, Marker, Popup, Polyline} from 'react-leaflet';
+// import L from 'react-leaflet'; //to avoid conflict with webpack require
+import L from 'leaflet';
+import {Map, TileLayer, Marker, Popup, Polyline, Icon} from 'react-leaflet';
 import $ from 'jquery';
 
 // Import local React components
@@ -22,8 +23,10 @@ import Others from './pageComponents/others';
 
 // Importing global variables
 import options from './data/options.js';
+import stops from './data/stops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
+import myIcons from './data/icons.js';
 
 // Import style
 import './Geoguide.css';
@@ -49,21 +52,6 @@ console.log(pagesListArray);
 // Main app content to be injected in
 var Appcontent;
 
-class Quiz extends Component{
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-
-    return(
-      <div>
-        Hey! I'm a quiz!
-      </div>
-    )
-  }
-}
-
 // Spot specific Classes
 class StopContent extends Component{
   constructor(props){
@@ -75,18 +63,22 @@ class StopContent extends Component{
     }
   }
 
+  // Method showing extended content
   extendContent = () => {
     this.setState({content:'extended'})
   }
 
+  // Method showing quiz content
   quizContent = () => {
     this.setState({content:'quiz'})
   }
 
+  // Method handling anwering of the quiz
   handleQuiz = () => {
     this.setState({answeredQuiz : true})
   }
 
+  // Shuffling the answers of the quiz
   shuffleAnswers = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -162,15 +154,14 @@ class StopContent extends Component{
             this.shuffleAnswers(answers);
           }
           // In any case, render td + button
-          var answerTag = <td><button style = {answerStyle} answerNumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
+          var answerTag = <td><button style = {answerStyle} answernumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
           answers.push(answerTag)
         }
-
         postContent =
           <div>
-            <table>
+            <table><tbody>
               <tr>
-                <th width = '400px' colspan = '2'>{currentData.question}</th>
+                <th width = '400px' colSpan = '2'>{currentData.question}</th>
               </tr>
               <tr>
                 {answers[0]}
@@ -180,7 +171,7 @@ class StopContent extends Component{
                 {answers[2]}
                 {answers[3]}
               </tr>
-            </table>
+            </tbody></table>
           </div>
       }
       return(postContent);
@@ -228,7 +219,7 @@ class PageContent extends Component {
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
 
-      // trackComplete variable for storing track with correct coordinates
+      // Track - trackComplete variable for storing track with correct coordinates
       var trackComplete = [];
       // Reversing latlng coordinates
       track.features.forEach(function(segment){
@@ -240,6 +231,13 @@ class PageContent extends Component {
         trackComplete.push(segment.geometry.coordinates);
       });
 
+      console.log(myIcons);
+
+      // Icon
+      // var myIcons = new L.Icon({
+      //   iconUrl : './icons/picon_1.png'
+      // })
+
     return(
         <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
           console.log(e.latlng);
@@ -250,7 +248,21 @@ class PageContent extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
+          {/* Polyline for track */}
           <Polyline color="red" positions={trackComplete}/>
+          {/* {stops.features.forEach(function(stop){
+            var id = stop.properties.id
+            var coords = stop.geometry.coordinates.reverse();
+            console.log(id, coords);
+            // return <Marker icon={myIcons} position={coords}/>
+          })} */}
+          {stops.features.map(function(stop){
+            var id = stop.properties.id
+            var coords = stop.geometry.coordinates.reverse();
+            return <Marker icon={myIcons} position={coords}/>
+          })}
+          <Marker icon={myIcons} position={[46.524502, 6.625199]}/>
+          <Marker icon={myIcons} position={[6.625199, 46.524502]}/>
         </Map>
     )
     // Rendering Stops page
