@@ -250,19 +250,12 @@ class PageContent extends Component {
           />
           {/* Polyline for track */}
           <Polyline color="red" positions={trackComplete}/>
-          {/* {stops.features.forEach(function(stop){
-            var id = stop.properties.id
-            var coords = stop.geometry.coordinates.reverse();
-            console.log(id, coords);
-            // return <Marker icon={myIcons} position={coords}/>
-          })} */}
+          {/* Loop for adding every marker according to its and position */}
           {stops.features.map(function(stop){
             var id = stop.properties.id
             var coords = stop.geometry.coordinates.reverse();
-            return <Marker icon={myIcons} position={coords}/>
+            return <Marker icon={myIcons[id-1]} position={coords}/>
           })}
-          <Marker icon={myIcons} position={[46.524502, 6.625199]}/>
-          <Marker icon={myIcons} position={[6.625199, 46.524502]}/>
         </Map>
     )
     // Rendering Stops page
