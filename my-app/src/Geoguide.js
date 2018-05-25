@@ -1,5 +1,7 @@
 // -------------------------------------------------- //
+// -------------------------------------------------- //
 // Importing libraries //
+// -------------------------------------------------- //
 // -------------------------------------------------- //
 // Import React
 import React, { Component } from 'react';
@@ -33,26 +35,26 @@ import './Geoguide.css';
 import 'leaflet/dist/leaflet.css';
 
 // -------------------------------------------------- //
+// -------------------------------------------------- //
 // Data manipulation //
+// -------------------------------------------------- //
 // -------------------------------------------------- //
 
 // Converting options keys to an array in order to map() through it
 var pagesListArray = Object.keys(options);
-// var stopsArray = Object.keys(stopsData);
-
-console.log(stopsData);
-console.log(pagesListArray);
-
-// console.log(stopsArray);
 
 // -------------------------------------------------- //
+// -------------------------------------------------- //
 // Rendering app components //
+// -------------------------------------------------- //
 // -------------------------------------------------- //
 
 // Main app content to be injected in
 var Appcontent;
 
-// Spot specific Classes
+// -------------------------------------------------- //
+// Component for content of stop
+// -------------------------------------------------- //
 class StopContent extends Component{
   constructor(props){
     super(props);
@@ -90,6 +92,7 @@ class StopContent extends Component{
   render(){
     // Compensate for decay in values - initializing at 6
     var arrayDecay = 6
+    console.log(this.props.stop);
     // storing id stop in currentData
     var currentData = stopsData[this.props.stop - arrayDecay]
     // console.log(currentData[this.props.stop].img_swip1)
@@ -178,7 +181,9 @@ class StopContent extends Component{
   }
 }
 
-// List of
+// -------------------------------------------------- //
+// Component for list of stops
+// -------------------------------------------------- //
 class Stops extends Component{
   // constructor(props){
   //   super(props);
@@ -194,28 +199,29 @@ class Stops extends Component{
   }
 }
 
-// Conditioning rendering for whole page
+// -------------------------------------------------- //
+// Component for content of the page
+// -------------------------------------------------- //
 class PageContent extends Component {
   constructor(props){
     super(props);
   }
 
+
   handleClick = () =>{
     this.refs.map.leafletElement.locate()
   }
 
-  loadGeometry = () => {
-    track.features.forEach(function(segment){
-      return segment.geometry.coordinates;
-  })}
-
   // Defining which page to render into PageContent Component
   render(){
+    var handleClick = this.props.handleClick;
+    // -------------------------------------------------- //
     // Rendering Welcome page
     if(this.props.content == 'Bienvenue'){
       return(
         <Welcome/>
       )
+    // -------------------------------------------------- //
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
 
@@ -230,13 +236,6 @@ class PageContent extends Component {
         // Add reversed coordinates into trackComplete variable
         trackComplete.push(segment.geometry.coordinates);
       });
-
-      console.log(myIcons);
-
-      // Icon
-      // var myIcons = new L.Icon({
-      //   iconUrl : './icons/picon_1.png'
-      // })
 
     return(
         <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
@@ -254,32 +253,38 @@ class PageContent extends Component {
           {stops.features.map(function(stop){
             var id = stop.properties.id
             var coords = stop.geometry.coordinates.reverse();
-            return <Marker icon={myIcons[id-1]} position={coords}/>
+            return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={handleClick}/>
           })}
         </Map>
     )
-    // Rendering Stops page
 
+  // -------------------------------------------------- //
+  // Rendering Stops page
   } else if (this.props.content == 'Postes'){
       return(
         // onClick props only has parameters when Geoguide-currentPage = Postes
         <Stops onClick = {this.props.onClick}/>
       )
+    // -------------------------------------------------- //
     // Rendering StopContent page
     } else if (this.props.content == 'StopContent'){
+      console.log(this.props.stop);
       return(
         <StopContent showMap = {this.props.showMap} stop={this.props.stop}/>
       )
+    // -------------------------------------------------- //
     // Rendering Score page
     } else if(this.props.content == 'Score'){
       return (
         <Score/>
       )
+    // -------------------------------------------------- //
     // Rendering Themes page
     } else if(this.props.content == 'Themes'){
       return(
         <Themes/>
       )
+    // -------------------------------------------------- //
     // Rendering Others page
     } else if(this.props.content == 'Autres'){
       return(
@@ -290,7 +295,8 @@ class PageContent extends Component {
 }
 
 // -------------------------------------------------- //
-// Final App rendering
+// Component for Final App rendering
+// -------------------------------------------------- //
 class Geoguide extends Component {
   constructor(props){
     super(props);
@@ -313,10 +319,14 @@ class Geoguide extends Component {
     this.setState({currentStop : null})
   }
 
-  showSpotContent = (e) => {
+  handleMarkerClick = (e) => {
+    this.setState({currentStop : e.target.options.value})
     this.setState({currentPage : 'StopContent'})
+  }
+
+  showSpotContent = (e) => {
     this.setState({currentStop: e.target.value})
-    // e.target.value
+    this.setState({currentPage : 'StopContent'})
   }
 
   login = (username,userid) => {
@@ -330,7 +340,7 @@ class Geoguide extends Component {
       <div className="App">
         <header>Here goes the header</header>
         <PageContent
-          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} stop = {this.state.currentStop}
+          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} handleClick={this.handleMarkerClick} stop = {this.state.currentStop}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}
