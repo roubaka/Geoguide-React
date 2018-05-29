@@ -207,8 +207,13 @@ class PageContent extends Component {
     super(props);
   }
 
+  handlePosition = (e) => {
+    var c = [46.525996, 6.580060];
+    var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
+    alert(d);
+  }
 
-  handleClick = () =>{
+  handleClick = () => {
     this.refs.map.leafletElement.locate()
   }
 
@@ -238,11 +243,7 @@ class PageContent extends Component {
       });
 
     return(
-        <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={function(e){
-          console.log(e.latlng);
-          console.log(e.accuracy);
-          console.log(e.time);
-        }}>
+        <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={this.handlePosition}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

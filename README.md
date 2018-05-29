@@ -3,6 +3,9 @@
 React Version of Geoguide Lausanne  
 `git` root from there
 
+## Test online
+[Beta version here](https://roubaka.github.io/Geoguide-React/)
+
 ## Deploying
 
 - Adding these into `package.json` :
