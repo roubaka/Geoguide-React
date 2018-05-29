@@ -12,7 +12,7 @@ import * as firebase from 'firebase';
 // Import jquery and Leaflet libraries
 // import L from 'react-leaflet'; //to avoid conflict with webpack require
 import L from 'leaflet';
-import {Map, TileLayer, Marker, Popup, Polyline, Icon} from 'react-leaflet';
+import {Map, TileLayer, Marker, Popup, Polyline, Icon, Circle} from 'react-leaflet';
 import $ from 'jquery';
 
 // Import local React components
@@ -29,6 +29,7 @@ import stops from './data/stops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
 import myIcons from './data/icons.js';
+import locationIcon from './data/location_icon.js';
 
 // Import style
 import './Geoguide.css';
@@ -205,12 +206,28 @@ class Stops extends Component{
 class PageContent extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      // currentStop : null
+      distanceTest : 0,
+      position : [46.524502, 6.625199],
+      positionAccuracy : 2
+    }
   }
 
   handlePosition = (e) => {
-    var c = [46.525996, 6.580060];
-    var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
-    alert(d);
+    var z = [46.525996, 6.580060];
+    // var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
+    var r = 6371;
+    var dLat = (e.latlng.lat - z[0]) * Math.PI/180;
+    var dLng = (e.latlng.lng - z[1]) * Math.PI/180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(e.latlng.lat * Math.PI/180) * Math.cos(z[0] * Math.PI/180) *
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = r * c * 1000;
+      this.setState({distanceTest : d});
+      this.setState({position: e.latlng});
+      this.setState({positionAccuracy : e.accuracy});
   }
 
   handleClick = () => {
@@ -243,20 +260,25 @@ class PageContent extends Component {
       });
 
     return(
-        <Map id='map' ref='map' center={[46.524502, 6.625199]} zoom={14} onClick={this.handleClick} onLocationFound={this.handlePosition}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          />
-          {/* Polyline for track */}
-          <Polyline color="red" positions={trackComplete}/>
-          {/* Loop for adding every marker according to its and position */}
-          {stops.features.map(function(stop){
-            var id = stop.properties.id
-            var coords = stop.geometry.coordinates.reverse();
-            return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={handleClick}/>
-          })}
-        </Map>
+        <div>
+          <Map id='map' ref='map' center={this.state.position} zoom={14} onClick={this.handleClick} onLocationFound={this.handlePosition}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+            />
+            {/* Polyline for track */}
+            <Polyline color="red" positions={trackComplete}/>
+            {/* Loop for adding every marker according to its and position */}
+            {stops.features.map(function(stop){
+              var id = stop.properties.id
+              var coords = stop.geometry.coordinates.reverse();
+              return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={handleClick}/>
+            })}
+            <Marker icon={locationIcon} position={this.state.position}/>
+            <Circle center={this.state.position} radius={this.state.positionAccuracy}/>
+          </Map>
+          <div>Je suis à {this.state.distanceTest} de Zézé</div>
+        </div>
     )
 
   // -------------------------------------------------- //
@@ -306,7 +328,8 @@ class Geoguide extends Component {
       userLogged : true,
       username : null,
       currentPage : pagesListArray[1],
-      currentStop : null
+      currentStop : null,
+      width : window.innerWidth,
     }
   }
 
@@ -336,6 +359,7 @@ class Geoguide extends Component {
   }
 
   render() {
+    console.log(this.state.width);
     if(this.state.userLogged){
       Appcontent =
       <div className="App">
