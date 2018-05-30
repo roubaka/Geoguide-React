@@ -207,11 +207,12 @@ class PageContent extends Component {
   constructor(props){
     super(props);
     this.state = {
-      // currentStop : null
+      mapShown : false,
       distanceTest : 0,
-      // Center of the map
+      // Parameters of the map
       center : [0,0],
-      // Position of the
+      zoom : 13,
+      // User location marker
       location : [0,0],
       locationAccuracy : 0
     }
@@ -231,12 +232,23 @@ class PageContent extends Component {
         this.setState({location: e.latlng});
         this.setState({locationAccuracy : e.accuracy});
         this.setState({center: e.latlng});
+        console.log(this.state.center);
+  }
+
+  handlePan = (e) => {
+    this.setState({center: e.target.getCenter()})
+  }
+
+  handleZoom = (e) => {
+    this.setState({zoom: e.target.getZoom()})
   }
 
   // When the map is loaded, get user location
   componentDidMount(){
+    this.setState({mapShown : true})
     this.setState({center : [46.524, 6.633]})
     this.refs.map.leafletElement.locate({watch:true})
+    console.log(this.state.mapShown)
   }
 
   // Defining which page to render into PageContent Component
@@ -266,7 +278,8 @@ class PageContent extends Component {
 
     return(
         <div>
-          <Map id='map' ref='map' center={this.state.center} zoom={13} onLocationFound={this.handleLocation}>
+          <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
+            onLocationFound={this.handleLocation} onDragend={this.handlePan} onZoomend={this.handleZoom}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
