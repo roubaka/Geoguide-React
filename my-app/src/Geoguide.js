@@ -209,29 +209,34 @@ class PageContent extends Component {
     this.state = {
       // currentStop : null
       distanceTest : 0,
-      position : [46.524502, 6.625199],
-      positionAccuracy : 2
+      // Center of the map
+      center : [0,0],
+      // Position of the
+      location : [0,0],
+      locationAccuracy : 0
     }
   }
 
-  handlePosition = (e) => {
-    var z = [46.525996, 6.580060];
-    // var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
-    var r = 6371;
-    var dLat = (e.latlng.lat - z[0]) * Math.PI/180;
-    var dLng = (e.latlng.lng - z[1]) * Math.PI/180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(e.latlng.lat * Math.PI/180) * Math.cos(z[0] * Math.PI/180) *
-            Math.sin(dLng/2) * Math.sin(dLng/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = r * c * 1000;
-      this.setState({distanceTest : d});
-      this.setState({position: e.latlng});
-      this.setState({positionAccuracy : e.accuracy});
+  handleLocation = (e) => {
+      // var z = [46.525996, 6.580060];
+      // // var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
+      // var r = 6371;
+      // var dLat = (e.latlng.lat - z[0]) * Math.PI/180;
+      // var dLng = (e.latlng.lng - z[1]) * Math.PI/180;
+      // var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      //         Math.cos(e.latlng.lat * Math.PI/180) * Math.cos(z[0] * Math.PI/180) *
+      //         Math.sin(dLng/2) * Math.sin(dLng/2);
+      // var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      // var d = r * c * 1000;
+        this.setState({location: e.latlng});
+        this.setState({locationAccuracy : e.accuracy});
+        this.setState({center: e.latlng});
   }
 
-  handleClick = () => {
-    this.refs.map.leafletElement.locate()
+  // When the map is loaded, get user location
+  componentDidMount(){
+    this.setState({center : [46.524, 6.633]})
+    this.refs.map.leafletElement.locate({watch:true})
   }
 
   // Defining which page to render into PageContent Component
@@ -261,7 +266,7 @@ class PageContent extends Component {
 
     return(
         <div>
-          <Map id='map' ref='map' center={this.state.position} zoom={14} onClick={this.handleClick} onLocationFound={this.handlePosition}>
+          <Map id='map' ref='map' center={this.state.center} zoom={13} onLocationFound={this.handleLocation}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -274,8 +279,8 @@ class PageContent extends Component {
               var coords = stop.geometry.coordinates.reverse();
               return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={handleClick}/>
             })}
-            <Marker icon={locationIcon} position={this.state.position}/>
-            <Circle center={this.state.position} radius={this.state.positionAccuracy}/>
+            <Marker icon={locationIcon} position={this.state.location}/>
+            <Circle center={this.state.location} radius={this.state.locationAccuracy}/>
           </Map>
           <div>Je suis à {this.state.distanceTest} de Zézé</div>
         </div>
@@ -359,7 +364,6 @@ class Geoguide extends Component {
   }
 
   render() {
-    console.log(this.state.width);
     if(this.state.userLogged){
       Appcontent =
       <div className="App">
