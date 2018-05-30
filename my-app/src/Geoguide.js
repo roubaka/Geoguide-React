@@ -12,7 +12,8 @@ import * as firebase from 'firebase';
 // Import jquery and Leaflet libraries
 // import L from 'react-leaflet'; //to avoid conflict with webpack require
 import L from 'leaflet';
-import {Map, TileLayer, Marker, Popup, Polyline, Icon, Circle} from 'react-leaflet';
+import Control from 'react-leaflet-control';
+import {Map, TileLayer, Marker, Popup, Polyline, Icon, Circle, MapControl} from 'react-leaflet';
 import $ from 'jquery';
 
 // Import local React components
@@ -30,6 +31,7 @@ import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
 import myIcons from './data/icons.js';
 import locationIcon from './data/location_icon.js';
+// import control from './data/control.js';
 
 // Import style
 import './Geoguide.css';
@@ -219,28 +221,26 @@ class PageContent extends Component {
   }
 
   handleLocation = (e) => {
-      // var z = [46.525996, 6.580060];
-      // // var d = Math.pow(Math.pow(c[1] - e.latlng.lat, 2) + Math.pow(c[0] - e.latlng.lng, 2),0.5);
-      // var r = 6371;
-      // var dLat = (e.latlng.lat - z[0]) * Math.PI/180;
-      // var dLng = (e.latlng.lng - z[1]) * Math.PI/180;
-      // var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-      //         Math.cos(e.latlng.lat * Math.PI/180) * Math.cos(z[0] * Math.PI/180) *
-      //         Math.sin(dLng/2) * Math.sin(dLng/2);
-      // var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      // var d = r * c * 1000;
-        this.setState({location: e.latlng});
-        this.setState({locationAccuracy : e.accuracy});
-        this.setState({center: e.latlng});
-        console.log(this.state.center);
+    this.setState({location: e.latlng});
+    this.setState({locationAccuracy : e.accuracy});
+    this.setState({center: e.latlng});
+    console.log(this.state.center);
   }
 
+  // Updating center state as panning
   handlePan = (e) => {
-    this.setState({center: e.target.getCenter()})
+    this.setState({center: e.target.getCenter()});
   }
 
+  // Updating zoom state as zoomed
   handleZoom = (e) => {
-    this.setState({zoom: e.target.getZoom()})
+    this.setState({zoom: e.target.getZoom()});
+  }
+
+  // Focus on current location
+  focusLocation = () => {
+    this.setState({center : this.state.location});
+    this.setState({zoom : 16});
   }
 
   // When the map is loaded, get user location
@@ -294,6 +294,10 @@ class PageContent extends Component {
             })}
             <Marker icon={locationIcon} position={this.state.location}/>
             <Circle center={this.state.location} radius={this.state.locationAccuracy}/>
+            <Control position='topright'>
+              <button onClick={this.focusLocation}>Centrer</button>
+            </Control>
+            {/* <MapControl position='topright'/> */}
           </Map>
           <div>Je suis à {this.state.distanceTest} de Zézé</div>
         </div>
@@ -347,7 +351,7 @@ class Geoguide extends Component {
       username : null,
       currentPage : pagesListArray[1],
       currentStop : null,
-      width : window.innerWidth,
+      width : window.innerWidth
     }
   }
 
