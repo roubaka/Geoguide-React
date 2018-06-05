@@ -210,37 +210,42 @@ class PageContent extends Component {
     super(props);
     this.state = {
       mapShown : false,
-      distanceTest : 0,
       // Parameters of the map
       center : [0,0],
       zoom : 13,
+      trackingLocation : true,
       // User location marker
       location : [0,0],
       locationAccuracy : 0
     }
   }
 
+  // Updating location point and map focus when new location is found
   handleLocation = (e) => {
     this.setState({location: e.latlng});
     this.setState({locationAccuracy : e.accuracy});
-    this.setState({center: e.latlng});
-    console.log(this.state.center);
+    if(this.state.trackingLocation){
+      this.setState({center: e.latlng});
+    }
   }
 
   // Updating center state as panning
   handlePan = (e) => {
     this.setState({center: e.target.getCenter()});
+    this.setState({trackingLocation : false});
   }
 
   // Updating zoom state as zoomed
   handleZoom = (e) => {
     this.setState({zoom: e.target.getZoom()});
+    this.setState({trackingLocation : false});
   }
 
   // Focus on current location
   focusLocation = () => {
     this.setState({center : this.state.location});
     this.setState({zoom : 16});
+    this.setState({trackingLocation : true});
   }
 
   // When the map is loaded, get user location
@@ -248,7 +253,6 @@ class PageContent extends Component {
     this.setState({mapShown : true})
     this.setState({center : [46.524, 6.633]})
     this.refs.map.leafletElement.locate({watch:true})
-    console.log(this.state.mapShown)
   }
 
   // Defining which page to render into PageContent Component
@@ -299,7 +303,6 @@ class PageContent extends Component {
             </Control>
             {/* <MapControl position='topright'/> */}
           </Map>
-          <div>Je suis à {this.state.distanceTest} de Zézé</div>
         </div>
     )
 
@@ -346,7 +349,7 @@ class Geoguide extends Component {
   constructor(props){
     super(props);
     this.state = {
-      // TODO change that in the end!
+      // TODO when finished set userLogged initial state to false
       userLogged : true,
       username : null,
       currentPage : pagesListArray[1],
