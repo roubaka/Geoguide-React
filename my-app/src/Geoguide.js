@@ -262,7 +262,7 @@ class PageContent extends Component {
   // When the map is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
-    // this.setState({center : [46.524, 6.633]})
+    console.log(this.state.mapShown);
     this.refs.map.leafletElement.locate({watch:true})
   }
 
@@ -278,18 +278,21 @@ class PageContent extends Component {
     // -------------------------------------------------- //
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
+      var mapShown = this.state.mapShown
 
-        // Track - trackComplete variable for storing track with correct coordinates
-        var trackComplete = [];
-        // Reversing latlng coordinates
-        track.features.forEach(function(segment){
-          // forEach feature, reverse each point coordinates
-          segment.geometry.coordinates.forEach(function(point){
+      // Track - trackComplete variable for storing track with correct coordinates
+      var trackComplete = [];
+      // Reversing latlng coordinates
+      track.features.forEach(function(segment){
+        // forEach feature, reverse each point coordinates
+        segment.geometry.coordinates.forEach(function(point){
+          if(mapShown == false){
             point.reverse();
-          })
-          // Add reversed coordinates into trackComplete variable
-          trackComplete.push(segment.geometry.coordinates);
-        });
+          }
+        })
+        // Add reversed coordinates into trackComplete variable
+        trackComplete.push(segment.geometry.coordinates);
+      });
 
     return(
         <div>
@@ -304,7 +307,10 @@ class PageContent extends Component {
             {/* Loop for adding every marker according to its and position */}
             {stops.features.map(function(stop){
               var id = stop.properties.id
-              var coords = stop.geometry.coordinates.reverse();
+              var coords = stop.geometry.coordinates
+              if(mapShown == false){
+                coords.reverse();
+              }
               return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={handleClick}/>
             })}
             <Marker icon={locationIcon} position={this.state.location}/>
