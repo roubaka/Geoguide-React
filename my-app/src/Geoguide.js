@@ -211,7 +211,7 @@ class PageContent extends Component {
     this.state = {
       mapShown : false,
       // Parameters of the map
-      center : [0,0],
+      center : [46.524, 6.633],
       zoom : 13,
       trackingLocation : true,
       // User location marker
@@ -224,9 +224,20 @@ class PageContent extends Component {
   handleLocation = (e) => {
     this.setState({location: e.latlng});
     this.setState({locationAccuracy : e.accuracy});
+    alert(this.state.location)
+    alert(e.latlng)
     if(this.state.trackingLocation){
       this.setState({center: e.latlng});
     }
+    stops.features.forEach(function(stop){
+      var s = stop.geometry.coordinates;
+      var d = Math.pow(Math.pow(s[1] - e.latlng.lat, 2) + Math.pow(s[0] - e.latlng.lng, 2), 0.5);
+        console.log(d);
+        if (d < 0.0002){
+          alert("maquessssi");
+        }
+    })
+    // stops.forEach(console.log(this))
   }
 
   // Updating center state as panning
@@ -251,7 +262,7 @@ class PageContent extends Component {
   // When the map is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
-    this.setState({center : [46.524, 6.633]})
+    // this.setState({center : [46.524, 6.633]})
     this.refs.map.leafletElement.locate({watch:true})
   }
 
@@ -268,17 +279,17 @@ class PageContent extends Component {
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
 
-      // Track - trackComplete variable for storing track with correct coordinates
-      var trackComplete = [];
-      // Reversing latlng coordinates
-      track.features.forEach(function(segment){
-        // forEach feature, reverse each point coordinates
-        segment.geometry.coordinates.forEach(function(point){
-          point.reverse();
-        })
-        // Add reversed coordinates into trackComplete variable
-        trackComplete.push(segment.geometry.coordinates);
-      });
+        // Track - trackComplete variable for storing track with correct coordinates
+        var trackComplete = [];
+        // Reversing latlng coordinates
+        track.features.forEach(function(segment){
+          // forEach feature, reverse each point coordinates
+          segment.geometry.coordinates.forEach(function(point){
+            point.reverse();
+          })
+          // Add reversed coordinates into trackComplete variable
+          trackComplete.push(segment.geometry.coordinates);
+        });
 
     return(
         <div>
@@ -387,7 +398,7 @@ class Geoguide extends Component {
     if(this.state.userLogged){
       Appcontent =
       <div className="App">
-        <header>Here goes the header</header>
+        <header>Here goes the header hého</header>
         <PageContent
           showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} handleClick={this.handleMarkerClick} stop = {this.state.currentStop}
         />
