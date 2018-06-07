@@ -162,13 +162,14 @@ input.qu_btn {
 .gm{ display: block; }
 .nogm{ display: none; }
 
+header,
 h1,
 h2,
 h3,
 h4,
 h5,
 p {
-  max-width: 900px;
+  /* max-width: 900px; */
   /* Added personnally */
   text-align: center;
 }

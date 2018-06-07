@@ -59,6 +59,7 @@ class Login extends Component {
 
   // Updates username value and checks if it already exists in db
   handleChange = (e) => {
+    localStorage.setItem('username',e.target.value)
     this.setState({username:e.target.value, validName:true, focusedInput:true})
     this.checkingDb()
   }

@@ -234,8 +234,8 @@ class PageContent extends Component {
         // NB default parameter for distance is 0.0002
         if (d < 0.002){
           // Actual stop number
+
           console.log(stop.properties.id);
-          var idStop = 6;
         }
     })
     this.refs.map.leafletElement.locate();
@@ -275,6 +275,7 @@ class PageContent extends Component {
 
   // Defining which page to render into PageContent Component
   render(){
+    // Storing handleClick props into a variable for use into callback functions
     var handleClick = this.props.handleClick;
     // -------------------------------------------------- //
     // Rendering Welcome page
@@ -373,12 +374,28 @@ class Geoguide extends Component {
     super(props);
     this.state = {
       // TODO when finished set userLogged initial state to false
-      userLogged : true,
-      username : null,
+      userLogged : localStorage.getItem('username') ? true : false,
+      username : localStorage.getItem('username'),
       currentPage : pagesListArray[1],
       currentStop : null,
       width : window.innerWidth
     }
+  }
+
+  getInitialState = () => {
+    // var username = '';
+    if(localStorage.getItem('username') != ''){
+      var username = localStorage.getItem('username')
+      console.log(username);
+      console.log(this.state.username);
+      this.setState({username : username});
+      this.setState({userLogged : true});
+
+    } else {
+      this.setState({username : null});
+      this.setState({userLogged : false});
+    }
+
   }
 
   showMap = () => {
@@ -407,12 +424,16 @@ class Geoguide extends Component {
   }
 
   render() {
+    // this.getInitialState();
+
     if(this.state.userLogged){
       Appcontent =
       <div className="App">
-        <header>Here goes the header hého</header>
+        <header>Here goes the header</header>
+        <h1>Logué en tant que {this.state.username}</h1>
         <PageContent
-          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} handleClick={this.handleMarkerClick} stop = {this.state.currentStop}
+          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent}
+          handleClick={this.handleMarkerClick} stop = {this.state.currentStop}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}
