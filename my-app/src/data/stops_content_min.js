@@ -338,7 +338,42 @@ var stopsData = [
    "img_swip9": "",
    "img_swip_legend": "",
    "remarque": ""
- }
+ },
+ // NB : remove this part when finished!
+ {
+   "id": 30,
+   "name": "Le dernier spot!",
+   "lng": 6.639080865,
+   "lat": 46.5266594,
+   "title": "Bienvenue à Lausanne-les-Bains! L'histoire mouvementée d'un quartier les pieds dans l'eau.",
+   "text1_p1": "Niché au fond de la vallée du Flon – d'où son nom – le quartier du Vallon a changé plusieurs fois de visage aux cours des siècles. Au XVIIIe siècle, c'est son heure de gloire: la haute société s'y rend pour y «prendre les eaux» dans des bains thermaux (situés à l'emplacement du n°12) alimentés par une source ferrugineuse recommandée par les médecins. Le vallon est orné d'une promenade plantée d'arbres et d'un pavillon des bains. Au tournant du XXe siècle, tout cela disparaît. Le quartier attire cependant toujours les touristes qui, de 1899 à 1948, pouvaient monter jusqu'au tout nouveau lac de Sauvabelin grâce à un funiculaire dont la gare de départ subsiste.",
+   "text1_p2": "",
+   "text2_p1": "Mais au début du XXe siècle, le quartier, devenu industriel, se distingue surtout par son insalubrité. Pour améliorer l'hygiène, on crée les Bains et Buanderie Haldimand, destinés cette fois à la population ouvrière qui ne dispose pas d'eau courante. Ces bains sont alimentés par une eau sans minéralisation particulière, la source ferrugineuse ayant été perdue. La construction en 1958 de l'usine d'incinération du Vallon, à 200 mètres d'ici, n'améliore de loin pas l'image du quartier. Durant ces dernières années, le Vallon a aussi accueilli divers squats et une part de la scène alternative lausannoise.",
+   "text2_p2": "Aujourd'hui, l'ancienne usine d'incinération a été remplacée par celle de Tridel, laissant le quartier respirer. Cette disparition laisse de la place pour imaginer un nouvel avenir au quartier. Les habitants sont consultés et participent à la définition des projets d'aménagement... Peut-être que l'on verra un jour des bains réapparaître dans ce quartier si changeant!",
+   "interaction": "A quoi ressemblaient ces bains?",
+   "followtrack": "Je veux poursuivre mon chemin",
+   "question_subject": "Existence des éléments du quartier par ordre croissant",
+   "question": "Pouvez-vous classer ces éléments selon leur ordre d'existence dans le quartier du Vallon, du plus ancien au plus récent? ",
+   "type_question": "ordinal",
+   "answer1": "Bains et Buanderie Haldimand ",
+   "answer2": "Usine Tridel",
+   "answer3": "Funiculaire",
+   "answer4": "Squats",
+   "correct": "3,1,4,2",
+   "img_title": "poste_6.jpg",
+   "img_swip1": "fig_6a.jpg",
+   "img_swip2": "fig_6b.jpg",
+   "img_swip3": "fig_6c.jpg",
+   "img_swip4": "",
+   "img_swip5": "",
+   "img_swip6": "",
+   "img_swip7": "",
+   "img_swip8": "",
+   "img_swip9": "",
+   "img_swip9": "",
+   "img_swip_legend": "",
+   "remarque": ""
+ },
 ]
 
 export default stopsData;

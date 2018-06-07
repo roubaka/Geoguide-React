@@ -224,20 +224,27 @@ class PageContent extends Component {
   handleLocation = (e) => {
     this.setState({location: e.latlng});
     this.setState({locationAccuracy : e.accuracy});
-    alert(this.state.location)
-    alert(e.latlng)
     if(this.state.trackingLocation){
       this.setState({center: e.latlng});
     }
     stops.features.forEach(function(stop){
       var s = stop.geometry.coordinates;
-      var d = Math.pow(Math.pow(s[1] - e.latlng.lat, 2) + Math.pow(s[0] - e.latlng.lng, 2), 0.5);
+      var d = Math.pow(Math.pow(s[0] - e.latlng.lat, 2) + Math.pow(s[1] - e.latlng.lng, 2), 0.5);
         console.log(d);
-        if (d < 0.0002){
-          alert("maquessssi");
+        // NB default parameter for distance is 0.0002
+        if (d < 0.002){
+          // Actual stop number
+          console.log(stop.properties.id);
+          var idStop = 6;
         }
     })
-    // stops.forEach(console.log(this))
+    this.refs.map.leafletElement.locate();
+  }
+
+  handleLocationError = (e) => {
+    // alert("on t'a perdu")
+    console.log("location error");
+    this.refs.map.leafletElement.locate();
   }
 
   // Updating center state as panning
@@ -262,8 +269,8 @@ class PageContent extends Component {
   // When the map is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
-    console.log(this.state.mapShown);
-    this.refs.map.leafletElement.locate({watch:true})
+    // this.refs.map.leafletElement.locate({watch:true})
+    this.refs.map.leafletElement.locate()
   }
 
   // Defining which page to render into PageContent Component
@@ -297,7 +304,7 @@ class PageContent extends Component {
     return(
         <div>
           <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
-            onLocationFound={this.handleLocation} onDragend={this.handlePan} onZoomend={this.handleZoom}>
+            onLocationFound={this.handleLocation} onLocationError={this.handleLocationError} onDragend={this.handlePan} onZoomend={this.handleZoom}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -318,7 +325,6 @@ class PageContent extends Component {
             <Control position='topright'>
               <button onClick={this.focusLocation}>Centrer</button>
             </Control>
-            {/* <MapControl position='topright'/> */}
           </Map>
         </div>
     )
