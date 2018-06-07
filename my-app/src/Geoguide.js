@@ -222,23 +222,33 @@ class PageContent extends Component {
 
   // Updating location point and map focus when new location is found
   handleLocation = (e) => {
+    console.log("handleLocation");
+    // Storing onStopReached props into a variable - triggers showSpotContent function inherited from Geoguide component
+    var onStopReached = this.props.onStopReached;
     this.setState({location: e.latlng});
     this.setState({locationAccuracy : e.accuracy});
     if(this.state.trackingLocation){
       this.setState({center: e.latlng});
     }
     stops.features.forEach(function(stop){
+      // Store coordinates of each points as variable S
       var s = stop.geometry.coordinates;
+      // Pythagore function - calculate distance betweeen location and every stop
       var d = Math.pow(Math.pow(s[0] - e.latlng.lat, 2) + Math.pow(s[1] - e.latlng.lng, 2), 0.5);
         console.log(d);
+        // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
         if (d < 0.002){
           // Actual stop number
-
           console.log(stop.properties.id);
+          onStopReached(stop.properties.id);
         }
     })
-    this.refs.map.leafletElement.locate();
+    // console.log(this.props.content);
+    // Only locate location on the map page
+    if(this.props.content == 'Carte'){
+      this.refs.map.leafletElement.locate();
+    }
   }
 
   handleLocationError = (e) => {
@@ -373,29 +383,14 @@ class Geoguide extends Component {
   constructor(props){
     super(props);
     this.state = {
-      // TODO when finished set userLogged initial state to false
+      // Check in localstorage if user has already been userLogged
+      // If there is a user in localStorage, set logged true and username as username
       userLogged : localStorage.getItem('username') ? true : false,
       username : localStorage.getItem('username'),
       currentPage : pagesListArray[1],
       currentStop : null,
       width : window.innerWidth
     }
-  }
-
-  getInitialState = () => {
-    // var username = '';
-    if(localStorage.getItem('username') != ''){
-      var username = localStorage.getItem('username')
-      console.log(username);
-      console.log(this.state.username);
-      this.setState({username : username});
-      this.setState({userLogged : true});
-
-    } else {
-      this.setState({username : null});
-      this.setState({userLogged : false});
-    }
-
   }
 
   showMap = () => {
@@ -414,9 +409,18 @@ class Geoguide extends Component {
   }
 
   showSpotContent = (e) => {
-    this.setState({currentStop: e.target.value})
-    this.setState({currentPage : 'StopContent'})
-  }
+      // showSpotContent triggered when stop in list is clicked and stop is reached
+      if(isNaN(e)){
+        // If parameter e isNaN, > get value of e.target
+        console.log(e.target.value);
+        this.setState({currentStop: e.target.value})
+        this.setState({currentPage : 'StopContent'})
+      } else {
+        // Else, stop was reached > get e
+        this.setState({currentStop : e-14})
+        this.setState({currentPage : 'StopContent'})
+      }
+    }
 
   login = (username,userid) => {
     this.setState({userLogged:true, username:username, userid:userid})
@@ -430,10 +434,10 @@ class Geoguide extends Component {
       Appcontent =
       <div className="App">
         <header>Here goes the header</header>
-        <h1>Logué en tant que {this.state.username}</h1>
+        <span>Logué en tant que {this.state.username}</span>
         <PageContent
           showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent}
-          handleClick={this.handleMarkerClick} stop = {this.state.currentStop}
+          handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}
