@@ -225,40 +225,48 @@ class PageContent extends Component {
   }
 
   // Updating location point and map focus when new location is found
-  handleLocation = (e) => {
-    console.log("handleLocation");
-    // Storing onStopReached props into a variable - triggers showSpotContent function inherited from Geoguide component
-    var onStopReached = this.props.onStopReached;
-    this.setState({location: e.latlng});
-    this.setState({locationAccuracy : e.accuracy});
+  onLocationFound = (position) => {
+    console.log(position);
+    this.setState({location: [position.coords.latitude,position.coords.longitude]});
+    this.setState({locationAccuracy : position.coords.accuracy});
+    // To avoid conflict when calling this on callback function
+    // replace component's "this" as self variable
+    var self = this;
+    window.setTimeout(function(){
+      navigator.geolocation.getCurrentPosition(self.onLocationFound, self.onLocationError);
+    }, 1000);
+
+    // If the user is tracking the location
     if(this.state.trackingLocation){
-      this.setState({center: e.latlng});
+      this.setState({center: [position.coords.latitude,position.coords.longitude]});
     }
+
+    // Check for each feature if the
     stops.features.forEach(function(stop){
       // Store coordinates of each points as variable S
       var s = stop.geometry.coordinates;
       // Pythagore function - calculate distance betweeen location and every stop
-      var d = Math.pow(Math.pow(s[0] - e.latlng.lat, 2) + Math.pow(s[1] - e.latlng.lng, 2), 0.5);
+      var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
         if (d < 0.0002){
           // if(d < 0.002){
           // Actual stop number
           console.log(stop.properties.id);
-          onStopReached(stop.properties.id);
+          self.props.onStopReached(stop.properties.id);
         }
     })
-    // console.log(this.props.content);
-    // Only locate location on the map page
-    if(this.props.content == 'Carte'){
-      this.refs.map.leafletElement.locate();
-    }
   }
 
-  handleLocationError = (e) => {
-    // alert("on t'a perdu")
-    console.log("location error");
-    this.refs.map.leafletElement.locate();
+  // Location error handling
+  onLocationError = () => {
+    // To avoid conflict when calling this on callback function
+    // replace component's "this" as self variable
+    var self = this;
+    console.log('position error');
+    window.setTimeout(function(){
+      navigator.geolocation.getCurrentPosition(self.onLocationFound, self.onLocationError);
+    }, 1000);
   }
 
   // Updating center state as panning
@@ -291,28 +299,6 @@ class PageContent extends Component {
       })
   }
 
-  // Location handling
-  onPositionFound = (position) => {
-    // To avoid conflict when calling this on callback function
-    // replace component's "this" as self variable
-    var self = this;
-    console.log('position found', position.coordinates);
-    window.setTimeout(function(){
-      navigator.geolocation.getCurrentPosition(self.onPositionFound, self.onPositionError);
-    }, 1000);
-  }
-
-  // Location error handling
-  onPositionError = () => {
-    // To avoid conflict when calling this on callback function
-    // replace component's "this" as self variable
-    var self = this;
-    console.log('position error');
-    window.setTimeout(function(){
-      navigator.geolocation.getCurrentPosition(self.onPositionFound, self.onPositionError);
-    }, 1000);
-  }
-
   // When the map is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
@@ -320,7 +306,7 @@ class PageContent extends Component {
 
     if ("geolocation" in navigator) {
       console.log('asking for geolocation');
-      navigator.geolocation.getCurrentPosition(this.onPositionFound, this.onPositionError);
+      navigator.geolocation.getCurrentPosition(this.onLocationFound, this.onLocationError);
       // navigator.geolocation.watchPosition(this.onPositionFound, this.onPositionError, {
       //   enableHighAccuracy: true, maximumAge: 30000, timeout: 27000
       // });
@@ -333,7 +319,6 @@ class PageContent extends Component {
 
   // Defining which page to render into PageContent Component
   render(){
-    console.log(this.props);
     // Storing handleClick props into a variable for use into callback functions
     var handleClick = this.props.handleClick;
     // -------------------------------------------------- //
@@ -363,8 +348,10 @@ class PageContent extends Component {
 
     return(
         <div ref='mymap'>
+          {/* Map with initial parameters */}
           <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
-            onLocationFound={this.handleLocation} onLocationError={this.handleLocationError} onDragend={this.handlePan} onZoomend={this.handleZoom}>
+            // Handling changed on focus when interacting with the map
+            onDragend={this.handlePan} onZoomend={this.handleZoom}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -386,7 +373,6 @@ class PageContent extends Component {
               <button onClick={this.focusLocation}>Centrer</button>
             </Control>
           </Map>
-          {console.log(this.refs)}
         </div>
     )
 
@@ -486,7 +472,6 @@ class Geoguide extends Component {
 
   render() {
     console.log(this.state.userid);
-    // this.getInitialState();
 
     if(this.state.userLogged){
       Appcontent =
