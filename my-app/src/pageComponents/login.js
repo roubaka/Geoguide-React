@@ -39,7 +39,7 @@ class Login extends Component {
       snap.forEach(childSnapshot => {
         // Checking 'username' value of the child of 'users'
         var usernameList = childSnapshot.child('/username').val();
-        // Checking for matchinv values into the db
+        // Checking for matching values into the db
         if(usernameList == this.state.username){
           this.setState({validName:false})
         } else
@@ -59,7 +59,6 @@ class Login extends Component {
 
   // Updates username value and checks if it already exists in db
   handleChange = (e) => {
-    localStorage.setItem('username',e.target.value)
     this.setState({username:e.target.value, validName:true, focusedInput:true})
     this.checkingDb()
   }
@@ -86,8 +85,8 @@ class Login extends Component {
           }
         })
       })
-      // alert("Ce nom d'utilisateur existe déjà, <br> merci de vérifier si c'est bien toi!");
     }
+
   }
 
   render(){

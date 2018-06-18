@@ -54,6 +54,7 @@ var pagesListArray = Object.keys(options);
 
 // Main app content to be injected in
 var Appcontent;
+var database = firebase.database();
 
 // -------------------------------------------------- //
 // Component for content of stop
@@ -71,6 +72,7 @@ class StopContent extends Component{
   // Method showing extended content
   extendContent = () => {
     this.setState({content:'extended'})
+    this.props.trackingLog('extendedContent','shown')
   }
 
   // Method showing quiz content
@@ -78,7 +80,7 @@ class StopContent extends Component{
     this.setState({content:'quiz'})
   }
 
-  // Method handling anwering of the quiz
+  // Method handling answering of the quiz
   handleQuiz = () => {
     this.setState({answeredQuiz : true})
   }
@@ -235,10 +237,10 @@ class PageContent extends Component {
       var s = stop.geometry.coordinates;
       // Pythagore function - calculate distance betweeen location and every stop
       var d = Math.pow(Math.pow(s[0] - e.latlng.lat, 2) + Math.pow(s[1] - e.latlng.lng, 2), 0.5);
-        console.log(d);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-        if (d < 0.002){
+        if (d < 0.0002){
+          // if(d < 0.002){
           // Actual stop number
           console.log(stop.properties.id);
           onStopReached(stop.properties.id);
@@ -276,15 +278,53 @@ class PageContent extends Component {
     this.setState({trackingLocation : true});
   }
 
+  // Keep records of the user's interaction into firebase
+  trackingLog = (username,data) => {
+    console.log(username);
+    console.log(data);
+      database.ref('/interactions').push({
+        username : username,
+        interaction : data
+      })
+  }
+
+  onPositionFound = (position) => {
+    var self = this;
+    console.log('position found', position);
+    window.setTimeout(function(){
+      navigator.geolocation.getCurrentPosition(self.onPositionFound, self.onPositionError);
+    }, 1000);
+  }
+
+  onPositionError = () => {
+    var self = this;
+    console.log('position error');
+    window.setTimeout(function(){
+      navigator.geolocation.getCurrentPosition(self.onPositionFound, self.onPositionError);
+    }, 1000);
+  }
+
   // When the map is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
-    // this.refs.map.leafletElement.locate({watch:true})
-    this.refs.map.leafletElement.locate()
+    //this.refs.map.leafletElement.locate()
+
+    if ("geolocation" in navigator) {
+      console.log('asking for geolocation');
+      navigator.geolocation.getCurrentPosition(this.onPositionFound, this.onPositionError);
+      // navigator.geolocation.watchPosition(this.onPositionFound, this.onPositionError, {
+      //   enableHighAccuracy: true, maximumAge: 30000, timeout: 27000
+      // });
+      //var watchID = navigator.geolocation.watchPosition(this.onPositionFound);
+    } else {
+      console.log('geolocation IS NOT available')
+    }
+
   }
 
   // Defining which page to render into PageContent Component
   render(){
+    console.log(this.props);
     // Storing handleClick props into a variable for use into callback functions
     var handleClick = this.props.handleClick;
     // -------------------------------------------------- //
@@ -313,7 +353,7 @@ class PageContent extends Component {
       });
 
     return(
-        <div>
+        <div ref='mymap'>
           <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
             onLocationFound={this.handleLocation} onLocationError={this.handleLocationError} onDragend={this.handlePan} onZoomend={this.handleZoom}>
             <TileLayer
@@ -337,6 +377,7 @@ class PageContent extends Component {
               <button onClick={this.focusLocation}>Centrer</button>
             </Control>
           </Map>
+          {console.log(this.refs)}
         </div>
     )
 
@@ -352,7 +393,7 @@ class PageContent extends Component {
     } else if (this.props.content == 'StopContent'){
       console.log(this.props.stop);
       return(
-        <StopContent showMap = {this.props.showMap} stop={this.props.stop}/>
+        <StopContent showMap = {this.props.showMap} stop={this.props.stop} trackingLog={this.trackingLog}/>
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -386,7 +427,9 @@ class Geoguide extends Component {
       // Check in localstorage if user has already been userLogged
       // If there is a user in localStorage, set logged true and username as username
       userLogged : localStorage.getItem('username') ? true : false,
+      // Set username and userid state from the data stored in localStorage
       username : localStorage.getItem('username'),
+      userid : localStorage.getItem('userid'),
       currentPage : pagesListArray[1],
       currentStop : null,
       width : window.innerWidth
@@ -417,17 +460,22 @@ class Geoguide extends Component {
         this.setState({currentPage : 'StopContent'})
       } else {
         // Else, stop was reached > get e
-        this.setState({currentStop : e-14})
+        // NB set to e-14 for test with geolocation arriving on fake last post
+        // this.setState({currentStop : e-14})
+        this.setState({currentStop : e})
         this.setState({currentPage : 'StopContent'})
       }
     }
 
   login = (username,userid) => {
     this.setState({userLogged:true, username:username, userid:userid})
-    console.log(username, userid);
+    // In every case, set localStorage username and userid as entered
+    localStorage.setItem('username',this.state.username)
+    localStorage.setItem('userid',this.state.userid)
   }
 
   render() {
+    console.log(this.state.userid);
     // this.getInitialState();
 
     if(this.state.userLogged){
@@ -438,6 +486,7 @@ class Geoguide extends Component {
         <PageContent
           showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent}
           handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
+          userid={this.state.userid}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}
