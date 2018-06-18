@@ -74,7 +74,7 @@ class StopContent extends Component{
     console.log(this.props);
     this.setState({content:'extended'})
     // Log into DB - interaction click, extendedContent of the post
-    this.props.trackingLog('click','extendedContent')
+    this.props.trackingLog('IN','click','extendedContent',this.props.stop)
   }
 
   // Method showing quiz content
@@ -281,17 +281,17 @@ class PageContent extends Component {
   }
 
   // Keep records of the user's interaction into firebase
-  trackingLog = (interaction,data) => {
-    console.log(this.props.username);
-    console.log(data);
+  trackingLog = (indicator,interaction,data,stop) => {
       database.ref('/interactions').push({
         username : this.props.username,
+        indicator : indicator,
         interaction : interaction,
-        data : data
+        data : data,
+        stop : stop
       })
   }
 
-  // Location
+  // Location handling
   onPositionFound = (position) => {
     // To avoid conflict when calling this on callback function
     // replace component's "this" as self variable
@@ -302,6 +302,7 @@ class PageContent extends Component {
     }, 1000);
   }
 
+  // Location error handling
   onPositionError = () => {
     // To avoid conflict when calling this on callback function
     // replace component's "this" as self variable
