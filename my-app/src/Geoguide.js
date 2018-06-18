@@ -71,8 +71,10 @@ class StopContent extends Component{
 
   // Method showing extended content
   extendContent = () => {
+    console.log(this.props);
     this.setState({content:'extended'})
-    this.props.trackingLog('extendedContent','shown')
+    // Log into DB - interaction click, extendedContent of the post
+    this.props.trackingLog('click','extendedContent')
   }
 
   // Method showing quiz content
@@ -279,24 +281,30 @@ class PageContent extends Component {
   }
 
   // Keep records of the user's interaction into firebase
-  trackingLog = (username,data) => {
-    console.log(username);
+  trackingLog = (interaction,data) => {
+    console.log(this.props.username);
     console.log(data);
       database.ref('/interactions').push({
-        username : username,
-        interaction : data
+        username : this.props.username,
+        interaction : interaction,
+        data : data
       })
   }
 
+  // Location
   onPositionFound = (position) => {
+    // To avoid conflict when calling this on callback function
+    // replace component's "this" as self variable
     var self = this;
-    console.log('position found', position);
+    console.log('position found', position.coordinates);
     window.setTimeout(function(){
       navigator.geolocation.getCurrentPosition(self.onPositionFound, self.onPositionError);
     }, 1000);
   }
 
   onPositionError = () => {
+    // To avoid conflict when calling this on callback function
+    // replace component's "this" as self variable
     var self = this;
     console.log('position error');
     window.setTimeout(function(){
@@ -467,9 +475,10 @@ class Geoguide extends Component {
       }
     }
 
+  // When user identifies himself, set state and localStorage with entered values
   login = (username,userid) => {
     this.setState({userLogged:true, username:username, userid:userid})
-    // In every case, set localStorage username and userid as entered
+    // Set localStorage username and userid as entered
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
   }
@@ -486,7 +495,7 @@ class Geoguide extends Component {
         <PageContent
           showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent}
           handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
-          userid={this.state.userid}
+          userid={this.state.userid} username={this.state.username}
         />
         <Navbar
           itemList = {pagesListArray} onClick = {this.changePage}
