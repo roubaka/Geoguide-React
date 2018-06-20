@@ -308,18 +308,12 @@ class PageContent extends Component {
 
   // Keep records of the user's interaction into firebase
   trackInteraction = (indicator,interaction,data,stop) => {
-      database.ref('/interactions').push({
-        username : this.props.username,
-        indicator : indicator,
-        interaction : interaction,
-        data : data,
-        stop : stop
-      })
-  }
-
-  updateUserData = (indicator,interaction,data,stop) => {
-    database.ref('/users').child(this.props.userid).update({
-      i1 : 'updated'
+    database.ref('/interactions').push({
+      username : this.props.username,
+      indicator : indicator,
+      interaction : interaction,
+      data : data,
+      stop : stop
     })
   }
 
@@ -467,8 +461,28 @@ class Geoguide extends Component {
     // Set localStorage username and userid as entered
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
+    // Checking data in the db, if they don't exist update them
+    if(this.checkUserData('i1') == false){
+      console.log("value does not exist yet");
+      this.updateUserData('i1','entered')
+    }
+  }
+
+  // Methods getting and setting user data into DB
+  checkUserData = (indicator) => {
     database.ref('/users').once('value', snap =>{
-      console.log(snap.child(userid).val().i1);
+      console.log(snap.child(this.state.userid).val()[indicator]);
+      if(snap.child(this.state.userid).val().indicator){
+        return true
+      } else {
+        return false
+      }
+    })
+  }
+
+  updateUserData = (indicator,value) => {
+    database.ref('/users').child(this.props.userid).update({
+      indicator : value
     })
   }
 
@@ -483,8 +497,8 @@ class Geoguide extends Component {
     this.setState({currentStop : null})
   }
 
+  // Handling rendering for navbar
   renderNavbar = (boolean) => {
-    console.log('renderNavbar');
     if(boolean){
       this.setState({renderNavbar : true})
     } else {
@@ -492,7 +506,7 @@ class Geoguide extends Component {
     }
   }
 
-  // Method handling
+  // Method pages change
   handleMarkerClick = (e) => {
     this.setState({currentStop : e.target.options.value})
     this.setState({currentPage : 'StopContent'})
@@ -531,7 +545,7 @@ class Geoguide extends Component {
           <span>Logué en tant que {this.state.username}</span>
           <PageContent
             // Passing information about user
-            userid={this.state.userid} username={this.state.username}
+            userid={this.state.userid} username={this.state.username} updateUserData={this.updateUserData}
             // Pasing methods about changing pages and rendering
             showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} renderNavbar = {this.renderNavbar}
             // Passing methods about map

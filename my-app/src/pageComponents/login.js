@@ -69,9 +69,26 @@ class Login extends Component {
       // Pushing new username into db - Store it into a variable
       var newUser = database.ref('/users').push({
         username:this.state.username,
-        i1 : '',
-        i2 : '',
-        i3 : '',
+        i11 : '',
+        i12 : '',
+        i13 : '',
+        i14 : '',
+        i15 : '',
+        i16 : '',
+        i17 : '',
+        i18 : '',
+        i21 : '',
+        i22 : '',
+        i23 : '',
+        i24 : '',
+        i25 : '',
+        i31 : '',
+        i32 : '',
+        i33 : '',
+        i41 : '',
+        i42 : '',
+        i43 : '',
+        i44 : '',
       });
       // Triggers login function inherited from Geoguide Component
       this.props.onClick(this.state.username,newUser.key);
