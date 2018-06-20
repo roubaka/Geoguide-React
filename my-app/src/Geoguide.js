@@ -462,27 +462,35 @@ class Geoguide extends Component {
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
     // Checking data in the db, if they don't exist update them
-    if(this.checkUserData('i1') == false){
+    let i11 = 'i11';
+    console.log(this.checkUserData(i11));
+    if(this.checkUserData(i11) == undefined){
       console.log("value does not exist yet");
-      this.updateUserData('i1','entered')
+      this.updateUserData(i11,'entered')
     }
   }
 
   // Methods getting and setting user data into DB
   checkUserData = (indicator) => {
+    let userData;
     database.ref('/users').once('value', snap =>{
-      console.log(snap.child(this.state.userid).val()[indicator]);
-      if(snap.child(this.state.userid).val().indicator){
-        return true
+      // console.log(snap.child(this.state.userid).val()[indicator]);
+      if(snap.child(this.state.userid).val()[indicator]){
+        userData = true;
       } else {
-        return false
+        userData = false;
       }
     })
+    setTimeout(function(){
+      console.log(userData);
+      return userData
+    }, 0);
   }
 
   updateUserData = (indicator,value) => {
-    database.ref('/users').child(this.props.userid).update({
-      indicator : value
+    console.log(indicator);
+    database.ref('/users').child(this.state.userid).update({
+      [indicator] : value
     })
   }
 
