@@ -462,11 +462,9 @@ class Geoguide extends Component {
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
     // Checking data in the db, if they don't exist update them
-    let i11 = 'i11';
-    console.log(this.checkUserData(i11));
-    if(this.checkUserData(i11) == undefined){
+    if(this.checkUserData('i11') == undefined){
       console.log("value does not exist yet");
-      this.updateUserData(i11,'entered')
+      this.updateUserData('i11','entered')
     }
   }
 
@@ -481,14 +479,12 @@ class Geoguide extends Component {
         userData = false;
       }
     })
-    setTimeout(function(){
       console.log(userData);
       return userData
-    }, 0);
   }
 
+  // Updating user data info DB
   updateUserData = (indicator,value) => {
-    console.log(indicator);
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
     })
