@@ -65,7 +65,8 @@ class StopContent extends Component{
     this.state = {
       // currentStop : null
       content : 'basic',
-      answeredQuiz : false
+      answeredQuiz : false,
+      shuffledOnce : false,
     }
   }
 
@@ -80,11 +81,13 @@ class StopContent extends Component{
   // Method showing quiz content
   quizContent = () => {
     this.setState({content:'quiz'})
+    this.props.renderNavbar(false)
   }
 
   // Method handling answering of the quiz
   handleQuiz = () => {
     this.setState({answeredQuiz : true})
+    this.props.renderNavbar(true)
   }
 
   // Shuffling the answers of the quiz
@@ -93,17 +96,20 @@ class StopContent extends Component{
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+    this.setState({shuffledOnce : true})
     return array;
-}
+  }
 
   render(){
     // Compensate for decay in values - initializing at 6
     var arrayDecay = 6
     console.log(this.props.stop);
+
     // storing id stop in currentData
     var currentData = stopsData[this.props.stop - arrayDecay]
     // console.log(currentData[this.props.stop].img_swip1)
     var postContent;
+
       // Conditional rendering for StopContent
 
       // 1) Rendering basic content
@@ -159,31 +165,41 @@ class StopContent extends Component{
             } else {
               answerStyle = wrongAnser;
             }
-          } else {
+          } else if(this.state.shuffledOnce) {
             // If the user hasn't answered quiz, shuffle the answers
             this.shuffleAnswers(answers);
           }
           // In any case, render td + button
           var answerTag = <td><button style = {answerStyle} answernumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
           answers.push(answerTag)
+          // If user has answered the question, add button to go back to map
+          var backToMap = ''
+          if(this.state.answeredQuiz){
+            var self = this;
+            backToMap = <button onClick = {this.props.showMap}>Je continue mon chemin!</button>
+          }
         }
         postContent =
           <div>
-            <table><tbody>
-              <tr>
-                <th width = '400px' colSpan = '2'>{currentData.question}</th>
-              </tr>
-              <tr>
-                {answers[0]}
-                {answers[1]}
-              </tr>
-              <tr>
-                {answers[2]}
-                {answers[3]}
-              </tr>
-            </tbody></table>
+            <table>
+              <tbody>
+                <tr>
+                  <th width = '400px' colSpan = '2'>{currentData.question}</th>
+                </tr>
+                <tr>
+                  {answers[0]}
+                  {answers[1]}
+                </tr>
+                <tr>
+                  {answers[2]}
+                  {answers[3]}
+                </tr>
+              </tbody>
+            </table>
+            {backToMap}
           </div>
       }
+
       return(postContent);
   }
 }
@@ -217,7 +233,8 @@ class PageContent extends Component {
       // Parameters of the map
       center : [46.524, 6.633],
       zoom : 13,
-      trackingLocation : true,
+      // Parameter for centering the map according to user's location
+      followingLocation : true,
       // User location marker
       location : [0,0],
       locationAccuracy : 0
@@ -237,7 +254,7 @@ class PageContent extends Component {
     }, 1000);
 
     // If the user is tracking the location
-    if(this.state.trackingLocation){
+    if(this.state.followingLocation){
       this.setState({center: [position.coords.latitude,position.coords.longitude]});
     }
 
@@ -272,20 +289,20 @@ class PageContent extends Component {
   // Updating center state as panning
   handlePan = (e) => {
     this.setState({center: e.target.getCenter()});
-    this.setState({trackingLocation : false});
+    this.setState({followingLocation : false});
   }
 
   // Updating zoom state as zoomed
   handleZoom = (e) => {
     this.setState({zoom: e.target.getZoom()});
-    this.setState({trackingLocation : false});
+    this.setState({followingLocation : false});
   }
 
   // Focus on current location
   focusLocation = () => {
     this.setState({center : this.state.location});
     this.setState({zoom : 16});
-    this.setState({trackingLocation : true});
+    this.setState({followingLocation : true});
   }
 
   // Keep records of the user's interaction into firebase
@@ -386,9 +403,13 @@ class PageContent extends Component {
     // -------------------------------------------------- //
     // Rendering StopContent page
     } else if (this.props.content == 'StopContent'){
-      console.log(this.props.stop);
       return(
-        <StopContent showMap = {this.props.showMap} stop={this.props.stop} trackingLog={this.trackingLog}/>
+        <StopContent
+          // Passing methods about changing pages and rendering
+          showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
+          // Passing tarckingLog method
+          trackingLog={this.trackingLog}
+        />
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -425,12 +446,23 @@ class Geoguide extends Component {
       // Set username and userid state from the data stored in localStorage
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
+      // States about page content and rendering
       currentPage : pagesListArray[1],
       currentStop : null,
+      renderNavbar : true,
       width : window.innerWidth
     }
   }
 
+  // When user identifies himself, set state and localStorage with entered values
+  login = (username,userid) => {
+    this.setState({userLogged:true, username:username, userid:userid})
+    // Set localStorage username and userid as entered
+    localStorage.setItem('username',this.state.username)
+    localStorage.setItem('userid',this.state.userid)
+  }
+
+  // Methods handling page changes and rendering
   showMap = () => {
     this.setState({currentPage : 'Carte'})
     this.setState({currentStop : null})
@@ -441,6 +473,16 @@ class Geoguide extends Component {
     this.setState({currentStop : null})
   }
 
+  renderNavbar = (boolean) => {
+    console.log('renderNavbar');
+    if(boolean){
+      this.setState({renderNavbar : true})
+    } else {
+      this.setState({renderNavbar : false})
+    }
+  }
+
+  // Method handling
   handleMarkerClick = (e) => {
     this.setState({currentStop : e.target.options.value})
     this.setState({currentPage : 'StopContent'})
@@ -462,36 +504,37 @@ class Geoguide extends Component {
       }
     }
 
-  // When user identifies himself, set state and localStorage with entered values
-  login = (username,userid) => {
-    this.setState({userLogged:true, username:username, userid:userid})
-    // Set localStorage username and userid as entered
-    localStorage.setItem('username',this.state.username)
-    localStorage.setItem('userid',this.state.userid)
-  }
-
   render() {
     console.log(this.state.userid);
 
+    // Storing navbar into variable, completed only if page content is not a quiz
+    var navbar = '';
+    if(this.state.renderNavbar){
+      navbar = <Navbar itemList = {pagesListArray} onClick = {this.changePage}/>
+    }
+
     if(this.state.userLogged){
-      Appcontent =
-      <div className="App">
-        <header>Here goes the header</header>
-        <span>Logué en tant que {this.state.username}</span>
-        <PageContent
-          showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent}
-          handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
-          userid={this.state.userid} username={this.state.username}
-        />
-        <Navbar
-          itemList = {pagesListArray} onClick = {this.changePage}
-        />
-      </div>
+      return(
+        <div className="App">
+          <header>Here goes the header</header>
+          <span>Logué en tant que {this.state.username}</span>
+          <PageContent
+            // Passing information about user
+            userid={this.state.userid} username={this.state.username}
+            // Pasing methods about changing pages and rendering
+            showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} renderNavbar = {this.renderNavbar}
+            // Passing methods about map
+            handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
+          />
+          {/* Navbar component showing only if page is not a quiz */}
+          {navbar}
+        </div>
+      )
     } else {
-      Appcontent =
-      <Login onClick={this.login}/>
-    };
-    return (Appcontent);
+      return (
+        <Login onClick={this.login}/>
+      )
+    }
   }
 }
 
