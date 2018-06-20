@@ -19,19 +19,18 @@ import $ from 'jquery';
 // Import local React components
 import Login from './pageComponents/login';
 import Navbar from './pageComponents/navbar';
+import Questionnary from './pageComponents/questionnary';
 import Welcome from './pageComponents/welcome';
 import Score from './pageComponents/score';
 import Themes from './pageComponents/themes';
 import Others from './pageComponents/others';
 
 // Importing global variables
-import options from './data/options.js';
 import stops from './data/stops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
 import myIcons from './data/icons.js';
 import locationIcon from './data/location_icon.js';
-// import control from './data/control.js';
 
 // Import style
 import './Geoguide.css';
@@ -43,8 +42,16 @@ import 'leaflet/dist/leaflet.css';
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 
+// Listing 4 options available in the navbar
+// Object keys and title field in french cause in the layout
+var options = {
+  Bienvenue:{title:'Bienvenue'},
+  Carte:{title:'Carte'},
+  Postes:{title:'Postes'},
+  Score:{title:'Score'},
+};
 // Converting options keys to an array in order to map() through it
-var pagesListArray = Object.keys(options);
+var optionsArray = Object.keys(options);
 
 // -------------------------------------------------- //
 // -------------------------------------------------- //
@@ -447,7 +454,7 @@ class Geoguide extends Component {
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
       // States about page content and rendering
-      currentPage : pagesListArray[1],
+      currentPage : 'Carte',
       currentStop : null,
       renderNavbar : true,
       width : window.innerWidth
@@ -510,9 +517,10 @@ class Geoguide extends Component {
     // Storing navbar into variable, completed only if page content is not a quiz
     var navbar = '';
     if(this.state.renderNavbar){
-      navbar = <Navbar itemList = {pagesListArray} onClick = {this.changePage}/>
+      navbar = <Navbar itemList = {optionsArray} onClick = {this.changePage}/>
     }
 
+    // If user data is found into localStorage
     if(this.state.userLogged){
       return(
         <div className="App">
@@ -530,6 +538,7 @@ class Geoguide extends Component {
           {navbar}
         </div>
       )
+    // If no user data is found into localStorage
     } else {
       return (
         <Login onClick={this.login}/>
