@@ -12,16 +12,8 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
 import options from '../data/options.js';
 
-// Listing available in the navbar
-// var options = {
-//   Bienvenue:{title:'Bienvenue'},
-//   Carte:{title:'Carte'},
-//   Stops:{title:'Postes'},
-//   Score:{title:'Score'},
-// };
-
 // Converting options keys to an array in order to map() through it
-var pagesListArray = Object.keys(options);
+var optionsArray = Object.keys(options);
 
 // Class navbar for navigating through the different pages
 class Navbar extends Component {
@@ -30,7 +22,7 @@ class Navbar extends Component {
   }
 
   render() {
-    var navbarItem = pagesListArray.map(function(item, i){
+    var navbarItem = optionsArray.map(function(item, i){
        return <td key = {i} value = {options[item].name}>{options[item].title}</td>;
     })
     // Array version for mapping through the options

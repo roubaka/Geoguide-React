@@ -26,6 +26,7 @@ import Themes from './pageComponents/themes';
 import Others from './pageComponents/others';
 
 // Importing global variables
+import options from './data/options.js';
 import stops from './data/stops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
@@ -42,14 +43,7 @@ import 'leaflet/dist/leaflet.css';
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 
-// Listing 4 options available in the navbar
-// Object keys and title field in french cause in the layout
-var options = {
-  Bienvenue:{title:'Bienvenue'},
-  Carte:{title:'Carte'},
-  Postes:{title:'Postes'},
-  Score:{title:'Score'},
-};
+
 // Converting options keys to an array in order to map() through it
 var optionsArray = Object.keys(options);
 
@@ -82,7 +76,7 @@ class StopContent extends Component{
     console.log(this.props);
     this.setState({content:'extended'})
     // Log into DB - interaction click, extendedContent of the post
-    this.props.trackingLog('IN','click','extendedContent',this.props.stop)
+    this.props.trackInteraction('IN','click','extendedContent',this.props.stop)
   }
 
   // Method showing quiz content
@@ -313,7 +307,7 @@ class PageContent extends Component {
   }
 
   // Keep records of the user's interaction into firebase
-  trackingLog = (indicator,interaction,data,stop) => {
+  trackInteraction = (indicator,interaction,data,stop) => {
       database.ref('/interactions').push({
         username : this.props.username,
         indicator : indicator,
@@ -321,6 +315,12 @@ class PageContent extends Component {
         data : data,
         stop : stop
       })
+  }
+
+  updateUserData = (indicator,interaction,data,stop) => {
+    database.ref('/users').child(this.props.userid).update({
+      i1 : 'updated'
+    })
   }
 
   // When the map is loaded, get user location
@@ -415,7 +415,7 @@ class PageContent extends Component {
           // Passing methods about changing pages and rendering
           showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
           // Passing tarckingLog method
-          trackingLog={this.trackingLog}
+          trackingLog={this.trackInteraction}
         />
       )
     // -------------------------------------------------- //
@@ -467,6 +467,9 @@ class Geoguide extends Component {
     // Set localStorage username and userid as entered
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
+    database.ref('/users').once('value', snap =>{
+      console.log(snap.child(userid).val().i1);
+    })
   }
 
   // Methods handling page changes and rendering
