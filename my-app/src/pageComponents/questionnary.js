@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Forms, Buttons} from 'react-bootstrap';
 import * as firebase from 'firebase';
 
+import questionnaries from './../data/questionnaries.js';
+
 // Firebase configuration and initialization
 var config = {
   apiKey: "AIzaSyDA9_FYCQfJKbyE_-V5tPB0Wdzv9pP3-2w",
@@ -12,7 +14,8 @@ var config = {
   messagingSenderId: "920767176331"
 };
 
-let initialIndicators = ['i11','i12','i13','i14','i31']
+
+let initialIndicators = ['i11','i12','i13','i14','i31'];
 
 // Setting a reference to the database service
 var database = firebase.database();
@@ -21,27 +24,34 @@ class Questionnary extends Component {
   constructor(props){
     super(props);
     this.state = {
-      nextIndicator : 'i11'
+      nextIndicator : 'i11',
+      userid : localStorage.getItem('userid')
     }
   }
 
-  getNextIndicator = () => {
-    var nextindIcator = database.ref('/users').once('value', snap => {
-      snap.child(this.props.userid).val().nextIndicator
+  setNextIndicator = () => {
+    console.log(this.state.userid);
+
+    var nextIndicator = '';
+    database.ref('/users').once('value', snap => {
+      nextIndicator = snap.child(this.state.userid).val().nextIndicator
+    }).then(() => {
+      // console.log(nextIndicator);
+      this.setState({nextIndicator : nextIndicator})
     })
-    this.setState({nextIndicator : nextindIcator})
+  }
+
+  componentDidMount(){
+    this.setNextIndicator()
   }
 
   render() {
-    let introduction;
-    // Check if the
-    if(initialIndicators.indexOf(this.state.nextIndicator) != -1){
-      introduction = <h2>Avant de commencer, nous souhaiterions vous demander quelques informations</h2>
-    }
+    console.log(questionnaries[0].indicateur == this.state.nextIndicator);
+
     return (
       <div>
-        {introduction}
-        <h2>Page de questionnaire</h2>
+        <h2></h2>
+        <h2></h2>
       </div>
     )
   }

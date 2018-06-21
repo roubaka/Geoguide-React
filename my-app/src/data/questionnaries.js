@@ -1,6 +1,6 @@
 var questionnaries = [
  {
-   "idicateur": "i11",
+   "indicateur": "i11",
    "type": "unique",
    "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre catégorie d'âge",
@@ -11,7 +11,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i12",
+   "indicateur": "i12",
    "type": "unique",
    "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre plus haute formation",
@@ -22,7 +22,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i13",
+   "indicateur": "i13",
    "type": "unique",
    "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Langue maternelle",
@@ -33,7 +33,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i14",
+   "indicateur": "i14",
    "type": "unique",
    "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre origine",
@@ -44,7 +44,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i15",
+   "indicateur": "i15",
    "type": "unique",
    "titre": "",
    "question": "Vous utilisez des smartphones/tablettes tactile",
@@ -55,7 +55,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i16",
+   "indicateur": "i16",
    "type": "unique",
    "titre": "",
    "question": "Vous utilisez internet",
@@ -66,7 +66,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i17",
+   "indicateur": "i17",
    "type": "slider",
    "titre": "",
    "question": "Sur une échelle de 1 à 5, évaluez votre niveau dans les domaines suivants (1 faible, 5 élevé)",
@@ -77,7 +77,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i18",
+   "indicateur": "i18",
    "type": "slider",
    "titre": "",
    "question": "Sur une échelle de 1 à 5, évaluez votre intérêt dans ces différents domaines (1 faible, 5 élevé)",
@@ -88,7 +88,7 @@ var questionnaries = [
    "option5": "Histoire"
  },
  {
-   "idicateur": "i21",
+   "indicateur": "i21",
    "type": "unique",
    "titre": "",
    "question": "De manière générale, vous avez trouvé les textes explicatifs",
@@ -99,7 +99,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i22",
+   "indicateur": "i22",
    "type": "",
    "titre": "",
    "question": "",
@@ -110,7 +110,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i23",
+   "indicateur": "i23",
    "type": "unique",
    "titre": "",
    "question": "De manière générale, vous avez trouvé les quiz",
@@ -121,7 +121,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i24",
+   "indicateur": "i24",
    "type": "unique",
    "titre": "",
    "question": "De manière générale, vous avez trouvé les lieux présentés",
@@ -132,7 +132,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i25",
+   "indicateur": "i25",
    "type": "unique",
    "titre": "",
    "question": "Combien de fois avez-vous déjà effectué le parcours du Géoguide Lausanne?",
@@ -143,7 +143,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i31",
+   "indicateur": "i31",
    "type": "",
    "titre": "",
    "question": "",
@@ -154,7 +154,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i32",
+   "indicateur": "i32",
    "type": "",
    "titre": "",
    "question": "",
@@ -165,7 +165,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i33",
+   "indicateur": "i33",
    "type": "",
    "titre": "",
    "question": "",
@@ -176,7 +176,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i41",
+   "indicateur": "i41",
    "type": "unique",
    "titre": "",
    "question": "Pourriez-vous dire dans lequel de ces quartier a été prise cette photographie?",
@@ -187,7 +187,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i42",
+   "indicateur": "i42",
    "type": "unique",
    "titre": "",
    "question": "Parmi ces loisirs, lequel appréciez-vous le plus?",
@@ -198,7 +198,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i43",
+   "indicateur": "i43",
    "type": "unique",
    "titre": "",
    "question": "En moyenne, à quelle fréquence faites-vous des marches (randonnées, promenades) pour votre plaisir?",
@@ -209,7 +209,7 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "idicateur": "i44",
+   "indicateur": "i44",
    "type": "slider",
    "titre": "",
    "question": "Sur une échelle de 1 à 5, évaluez l'importance des critères suivants lorsque vous faites une marche",
@@ -220,7 +220,7 @@ var questionnaries = [
    "option5": "Historique des lieux"
  },
  {
-   "idicateur": "i45",
+   "indicateur": "i45",
    "type": "slider",
    "titre": "",
    "question": "Le long du parcours du Géoguide, vous souhaitez avant tout",
@@ -231,3 +231,5 @@ var questionnaries = [
    "option5": ""
  }
 ]
+
+export default questionnaries;

@@ -26,12 +26,13 @@ import Themes from './pageComponents/themes';
 import Others from './pageComponents/others';
 
 // Importing global variables
+import locationIcon from './data/location_icon.js';
+import myIcons from './data/icons.js';
 import options from './data/options.js';
+import questionnaries from './data/questionnaries.js';
 import stops from './data/stops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
-import myIcons from './data/icons.js';
-import locationIcon from './data/location_icon.js';
 
 // Import style
 import './Geoguide.css';
