@@ -69,26 +69,26 @@ class Login extends Component {
       // Pushing new username into db - Store it into a variable
       var newUser = database.ref('/users').push({
         username:this.state.username,
-        i11 : '',
-        i12 : '',
-        i13 : '',
-        i14 : '',
-        i15 : '',
-        i16 : '',
-        i17 : '',
-        i18 : '',
-        i21 : '',
-        i22 : '',
-        i23 : '',
-        i24 : '',
-        i25 : '',
-        i31 : '',
-        i32 : '',
-        i33 : '',
-        i41 : '',
-        i42 : '',
-        i43 : '',
-        i44 : '',
+        i11 : 'undefined',
+        i12 : 'undefined',
+        i13 : 'undefined',
+        i14 : 'undefined',
+        i15 : 'undefined',
+        i16 : 'undefined',
+        i17 : 'undefined',
+        i18 : 'undefined',
+        i21 : 'undefined',
+        i22 : 'undefined',
+        i23 : 'undefined',
+        i24 : 'undefined',
+        i25 : 'undefined',
+        i31 : 'undefined',
+        i32 : 'undefined',
+        i33 : 'undefined',
+        i41 : 'undefined',
+        i42 : 'undefined',
+        i43 : 'undefined',
+        i44 : 'undefined',
       });
       // Triggers login function inherited from Geoguide Component
       this.props.onClick(this.state.username,newUser.key);
@@ -106,7 +106,6 @@ class Login extends Component {
         })
       })
     }
-
   }
 
   render(){

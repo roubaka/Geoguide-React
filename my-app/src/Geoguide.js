@@ -337,6 +337,7 @@ class PageContent extends Component {
 
   // Defining which page to render into PageContent Component
   render(){
+    localStorage.setItem('currentPage',this.props.content)
     // Storing handleClick props into a variable for use into callback functions
     var handleClick = this.props.handleClick;
     // -------------------------------------------------- //
@@ -403,14 +404,20 @@ class PageContent extends Component {
       )
     // -------------------------------------------------- //
     // Rendering StopContent page
-    } else if (this.props.content == 'StopContent'){
+    } else if(this.props.content == 'StopContent'){
       return(
         <StopContent
           // Passing methods about changing pages and rendering
           showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
           // Passing tarckingLog method
-          trackingLog={this.trackInteraction}
+          trackInteraction={this.trackInteraction}
         />
+      )
+    // -------------------------------------------------- //
+    // Rendering Questionnary page
+    } else if(this.props.content == 'Questionnaire'){
+      return (
+        <Questionnary/>
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -430,6 +437,13 @@ class PageContent extends Component {
       return(
         <Others/>
       )
+    } else {
+      return(
+        <div>
+          <h1>Oups, on dirait qu'il y a une erreur...</h1>
+          <p>Pour retourner sur le Géoguide, fermez votre navigateur et relancez l'applicatoion.</p>
+        </div>
+      )
     }
   }
 }
@@ -448,7 +462,7 @@ class Geoguide extends Component {
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
       // States about page content and rendering
-      currentPage : 'Carte',
+      currentPage : localStorage.getItem('currentPage'),
       currentStop : null,
       renderNavbar : true,
       width : window.innerWidth
@@ -457,33 +471,40 @@ class Geoguide extends Component {
 
   // When user identifies himself, set state and localStorage with entered values
   login = (username,userid) => {
-    this.setState({userLogged:true, username:username, userid:userid})
+    this.setState({username:username, userid:userid})
     // Set localStorage username and userid as entered
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
-    // Checking data in the db, if they don't exist update them
-    if(this.checkUserData('i11') == undefined){
-      console.log("value does not exist yet");
-      this.updateUserData('i11','entered')
-    }
+    // Check for first indicator in database
+    let initialIndicators = ['i11','i12','i13','i14']
+    var self = this;
+    initialIndicators.forEach(function(item){
+      self.checkUserData(item);
+    })
+    // In any case define user as logged in when finished
+    this.setState({userLogged:true})
   }
 
   // Methods getting and setting user data into DB
   checkUserData = (indicator) => {
-    let userData;
-    database.ref('/users').once('value', snap =>{
+    let indicatorExists = ''
+    database.ref('/users').once('value', snap => {
       // console.log(snap.child(this.state.userid).val()[indicator]);
-      if(snap.child(this.state.userid).val()[indicator]){
-        userData = true;
+      indicatorExists = snap.child(this.state.userid).val()[indicator];
+    }).then(() => {
+      if(indicatorExists == 'undefined'){
+        console.log(indicatorExists);
+        this.setState({'currentPage' : 'Questionnaire'})
       } else {
-        userData = false;
+        console.log(indicatorExists);
+        this.setState({'currentPage' : 'Carte'})
       }
-    })
-      console.log(userData);
-      return userData
+    }).then(() => console.log(this.state))
   }
 
   // Updating user data info DB
+  // indicator corresponds to i11, i12 etc. values
+  // value corresponds to the value linked to the specific indicator
   updateUserData = (indicator,value) => {
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
