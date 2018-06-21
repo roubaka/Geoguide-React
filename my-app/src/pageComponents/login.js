@@ -89,6 +89,8 @@ class Login extends Component {
         i42 : 'undefined',
         i43 : 'undefined',
         i44 : 'undefined',
+        i45 : 'undefined',
+        nextIndicator : 'i11',
       });
       // Triggers login function inherited from Geoguide Component
       this.props.onClick(this.state.username,newUser.key);

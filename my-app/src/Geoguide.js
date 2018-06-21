@@ -417,7 +417,7 @@ class PageContent extends Component {
     // Rendering Questionnary page
     } else if(this.props.content == 'Questionnaire'){
       return (
-        <Questionnary/>
+        <Questionnary userid={this.state.userid}/>
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -476,7 +476,7 @@ class Geoguide extends Component {
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
     // Check for first indicator in database
-    let initialIndicators = ['i11','i12','i13','i14']
+    let initialIndicators = ['i11','i12','i13','i14','i31']
     var self = this;
     initialIndicators.forEach(function(item){
       self.checkUserData(item);
@@ -493,13 +493,11 @@ class Geoguide extends Component {
       indicatorExists = snap.child(this.state.userid).val()[indicator];
     }).then(() => {
       if(indicatorExists == 'undefined'){
-        console.log(indicatorExists);
-        this.setState({'currentPage' : 'Questionnaire'})
+        this.setState({'currentPage' : 'Questionnaire','renderNavbar':false})
       } else {
-        console.log(indicatorExists);
-        this.setState({'currentPage' : 'Carte'})
+        this.setState({'currentPage' : 'Carte','renderNavbar':true})
       }
-    }).then(() => console.log(this.state))
+    })
   }
 
   // Updating user data info DB
