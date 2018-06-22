@@ -1,8 +1,8 @@
 var questionnaries = [
  {
-   "indicateur": "i11",
+   "indicator": "i11",
    "type": "unique",
-   "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
+   "title": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre catégorie d'âge",
    "option1": "Moins de 20 ans",
    "option2": "20 - 39 ans",
@@ -11,9 +11,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i12",
+   "indicator": "i12",
    "type": "unique",
-   "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
+   "title": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre plus haute formation",
    "option1": "Ecole obligatoire, Ecole de culture générale",
    "option2": "Apprentissage, Ecole professionnelle",
@@ -22,9 +22,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i13",
+   "indicator": "i13",
    "type": "unique",
-   "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
+   "title": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Langue maternelle",
    "option1": "Français",
    "option2": "Autre",
@@ -33,9 +33,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i14",
+   "indicator": "i14",
    "type": "unique",
-   "titre": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
+   "title": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
    "question": "Votre origine",
    "option1": "Lausanne et région",
    "option2": "Suisse romande",
@@ -44,9 +44,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i15",
+   "indicator": "i15",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "Vous utilisez des smartphones/tablettes tactile",
    "option1": "Moins d'une fois par semaine",
    "option2": "1 à 7 fois par semaine",
@@ -55,9 +55,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i16",
+   "indicator": "i16",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "Vous utilisez internet",
    "option1": "Moins d'une fois par semaine",
    "option2": "1 à 7 fois par semaine",
@@ -66,9 +66,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i17",
+   "indicator": "i17",
    "type": "slider",
-   "titre": "",
+   "title": "",
    "question": "Sur une échelle de 1 à 5, évaluez votre niveau dans les domaines suivants (1 faible, 5 élevé)",
    "option1": "Lecture de carte",
    "option2": "Sens de l'orientation",
@@ -77,9 +77,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i18",
+   "indicator": "i18",
    "type": "slider",
-   "titre": "",
+   "title": "",
    "question": "Sur une échelle de 1 à 5, évaluez votre intérêt dans ces différents domaines (1 faible, 5 élevé)",
    "option1": "Géomorphologie",
    "option2": "Géologie",
@@ -88,9 +88,9 @@ var questionnaries = [
    "option5": "Histoire"
  },
  {
-   "indicateur": "i21",
+   "indicator": "i21",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "De manière générale, vous avez trouvé les textes explicatifs",
    "option1": "Très intéressants",
    "option2": "Plutôt intéressants",
@@ -99,9 +99,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i22",
+   "indicator": "i22",
    "type": "",
-   "titre": "",
+   "title": "",
    "question": "",
    "option1": "",
    "option2": "",
@@ -110,9 +110,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i23",
+   "indicator": "i23",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "De manière générale, vous avez trouvé les quiz",
    "option1": "Très intéressants",
    "option2": "Plutôt intéressants",
@@ -121,9 +121,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i24",
+   "indicator": "i24",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "De manière générale, vous avez trouvé les lieux présentés",
    "option1": "Très intéressants",
    "option2": "Plutôt intéressants",
@@ -132,9 +132,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i25",
+   "indicator": "i25",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "Combien de fois avez-vous déjà effectué le parcours du Géoguide Lausanne?",
    "option1": "Jamais, c'est la première fois",
    "option2": "Une fois",
@@ -143,9 +143,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i31",
+   "indicator": "i31",
    "type": "",
-   "titre": "",
+   "title": "",
    "question": "",
    "option1": "",
    "option2": "",
@@ -154,9 +154,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i32",
+   "indicator": "i32",
    "type": "",
-   "titre": "",
+   "title": "",
    "question": "",
    "option1": "",
    "option2": "",
@@ -165,9 +165,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i33",
+   "indicator": "i33",
    "type": "",
-   "titre": "",
+   "title": "",
    "question": "",
    "option1": "",
    "option2": "",
@@ -176,9 +176,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i41",
+   "indicator": "i41",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "Pourriez-vous dire dans lequel de ces quartier a été prise cette photographie?",
    "option1": "Quartier de la Gare",
    "option2": "Le Flon",
@@ -187,9 +187,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i42",
+   "indicator": "i42",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "Parmi ces loisirs, lequel appréciez-vous le plus?",
    "option1": "Les randonnées en montagne",
    "option2": "Les promenades en nature",
@@ -198,9 +198,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i43",
+   "indicator": "i43",
    "type": "unique",
-   "titre": "",
+   "title": "",
    "question": "En moyenne, à quelle fréquence faites-vous des marches (randonnées, promenades) pour votre plaisir?",
    "option1": "Quelques fois par an",
    "option2": "Environ une fois par mois",
@@ -209,9 +209,9 @@ var questionnaries = [
    "option5": ""
  },
  {
-   "indicateur": "i44",
+   "indicator": "i44",
    "type": "slider",
-   "titre": "",
+   "title": "",
    "question": "Sur une échelle de 1 à 5, évaluez l'importance des critères suivants lorsque vous faites une marche",
    "option1": "Performance physique (distance, durée, vitesse)",
    "option2": "Bien-être personnel",
@@ -220,9 +220,9 @@ var questionnaries = [
    "option5": "Historique des lieux"
  },
  {
-   "indicateur": "i45",
+   "indicator": "i45",
    "type": "slider",
-   "titre": "",
+   "title": "",
    "question": "Le long du parcours du Géoguide, vous souhaitez avant tout",
    "option1": "En apprendre sur la ville et sa géographie",
    "option2": "Découvrir des lieux ainsi que leur histoire",

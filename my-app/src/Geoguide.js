@@ -418,7 +418,7 @@ class PageContent extends Component {
     // Rendering Questionnary page
     } else if(this.props.content == 'Questionnaire'){
       return (
-        <Questionnary userid={this.state.userid}/>
+        <Questionnary userid={this.state.userid} updateUserData={this.props.updateUserData}/>
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -462,6 +462,8 @@ class Geoguide extends Component {
       // Set username and userid state from the data stored in localStorage
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
+      // Saving data on next indicator
+      nextIndicator : '',
       // States about page content and rendering
       currentPage : localStorage.getItem('currentPage'),
       currentStop : null,
@@ -477,11 +479,16 @@ class Geoguide extends Component {
     localStorage.setItem('username',this.state.username)
     localStorage.setItem('userid',this.state.userid)
     // Check for first indicator in database
-    let initialIndicators = ['i11','i12','i13','i14','i31']
-    var self = this;
-    initialIndicators.forEach(function(item){
-      self.checkUserData(item);
-    })
+    // NB: check this part later
+    // let initialIndicators = ['i11','i12','i13','i14']
+    // var self = this;
+    // initialIndicators.forEach(function(item){
+    //   self.checkUserData(item);
+    // })
+    // On evey login, check first indicator i11
+    this.checkUserData('i11')
+    // Check for next indicator, if the user has already completed part of the path
+    this.initializeNextIndicator()
     // In any case define user as logged in when finished
     this.setState({userLogged:true})
   }
@@ -508,6 +515,23 @@ class Geoguide extends Component {
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
     })
+  }
+
+  // Getting nextIndicator to be set into dB when starting the app
+  initializeNextIndicator = () => {
+    var nextIndicator = '';
+    database.ref('/users').once('value', snap => {
+      nextIndicator = snap.child(this.state.userid).val().nextIndicator
+    }).then(() => {
+      // Save the nextIndicator into state and into localStorage
+      this.setState({nextIndicator : nextIndicator})
+      localStorage.setItem('nextIndicator',nextIndicator)
+    })
+  }
+
+  // Setting nextIndicator to be set into dB
+  setNexIndicator = (nextIndicator) => {
+    // database.ref('users')
   }
 
   // Methods handling page changes and rendering

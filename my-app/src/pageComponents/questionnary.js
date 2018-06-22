@@ -14,7 +14,6 @@ var config = {
   messagingSenderId: "920767176331"
 };
 
-
 let initialIndicators = ['i11','i12','i13','i14','i31'];
 
 // Setting a reference to the database service
@@ -24,34 +23,46 @@ class Questionnary extends Component {
   constructor(props){
     super(props);
     this.state = {
-      nextIndicator : 'i11',
       userid : localStorage.getItem('userid')
     }
   }
 
-  setNextIndicator = () => {
-    console.log(this.state.userid);
-
-    var nextIndicator = '';
-    database.ref('/users').once('value', snap => {
-      nextIndicator = snap.child(this.state.userid).val().nextIndicator
-    }).then(() => {
-      // console.log(nextIndicator);
-      this.setState({nextIndicator : nextIndicator})
-    })
-  }
-
-  componentDidMount(){
-    this.setNextIndicator()
-  }
-
   render() {
-    console.log(questionnaries[0].indicateur == this.state.nextIndicator);
+
+
+    // Elements to be placed into the map
+    var title = questionnaries[0].title
+    var question = questionnaries[0].question
+    var options = []
+
+    // Iterating
+    for (var i = 1; i < 6; i++){
+      // Saving this's Component into self variable for handling callback
+      var self = this;
+      // Related indicator to be set
+      let indicator = questionnaries[0].indicator
+      // Variable containing specified option
+      let option = `option${i}`
+      // Value of the specific option
+      let optionValue = questionnaries[0][option]
+      if(questionnaries[0][option] != ''){
+        options.push(
+          <button key = {i} onClick = {function(){
+            // self.props.setNexIndicator()
+            self.props.updateUserData(indicator, optionValue)
+          }}>{optionValue}
+          </button>,
+          <br/>
+        )
+      }
+    }
+
 
     return (
       <div>
-        <h2></h2>
-        <h2></h2>
+        <h3>{title}</h3>
+        <h2>{question}</h2>
+        {options}
       </div>
     )
   }
