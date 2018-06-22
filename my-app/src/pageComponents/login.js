@@ -53,7 +53,7 @@ class Login extends Component {
   // Clears input on first focus
   handleFocus = (e) => {
     if(this.state.focusedInput == false){
-    e.target.value = ''
+      e.target.value = ''
     }
   }
 
