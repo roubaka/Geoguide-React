@@ -23,29 +23,43 @@ class Questionnary extends Component {
   constructor(props){
     super(props);
     this.state = {
-      userid : localStorage.getItem('userid')
+      userid : localStorage.getItem('userid'),
+      indexOfIndicator : 0
     }
   }
 
+  componentDidMount(){
+    // Saving this's Component into self variable for handling callback
+    var self = this;
+    // Iterating through the whole array of indicators in questionnaries
+    questionnaries.forEach(function(item){
+      // If the nextIndicator, get current index
+      if(item.indicator == localStorage.getItem('nextIndicator')){
+        self.setState({indexOfIndicator : questionnaries.indexOf(item)})
+        return
+      }
+    })
+  }
+
   render() {
-
-
+    // Saving this's Component into self variable for handling callback
+    var self = this;
+    // nextOne = object corresponding to the current indicator to be set
+    var nextOne = questionnaries[this.state.indexOfIndicator];
     // Elements to be placed into the map
-    var title = questionnaries[0].title
-    var question = questionnaries[0].question
+    var title = nextOne.title
+    var question = nextOne.question
     var options = []
 
     // Iterating
     for (var i = 1; i < 6; i++){
-      // Saving this's Component into self variable for handling callback
-      var self = this;
       // Related indicator to be set
-      let indicator = questionnaries[0].indicator
+      let indicator = nextOne.indicator
       // Variable containing specified option
       let option = `option${i}`
       // Value of the specific option
-      let optionValue = questionnaries[0][option]
-      if(questionnaries[0][option] != ''){
+      let optionValue = nextOne[option]
+      if(nextOne[option] != ''){
         options.push(
           <button key = {i} onClick = {function(){
             // self.props.setNexIndicator()
