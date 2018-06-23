@@ -40,11 +40,12 @@ import 'leaflet/dist/leaflet.css';
 
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Data manipulation //
+// Data and manipulation //
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 
 
+let indicatorsList = ['i11','i12','i13','i14'];
 // Converting options keys to an array in order to map() through it
 var optionsArray = Object.keys(options);
 
@@ -418,7 +419,7 @@ class PageContent extends Component {
     // Rendering Questionnary page
     } else if(this.props.content == 'Questionnaire'){
       return (
-        <Questionnary userid={this.state.userid} updateUserData={this.props.updateUserData}/>
+        <Questionnary userid={this.state.userid} updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}/>
       )
     // -------------------------------------------------- //
     // Rendering Score page
@@ -485,12 +486,15 @@ class Geoguide extends Component {
     // initialIndicators.forEach(function(item){
     //   self.checkUserData(item);
     // })
-    // On evey login, check first indicator i11
-    this.checkUserData('i11')
-    // Check for next indicator, if the user has already completed part of the path
     this.initializeNextIndicator()
+    // Save this's comopnent as self variabel for callback function
+    var self = this;
+    // Check for next indicator, if the user has already completed part of the path
+    setTimeout(function(){
+      self.checkUserData(localStorage.getItem('nextIndicator'))
+    },1000)
     // In any case define user as logged in when finished
-    this.setState({userLogged:true})
+    this.setState({userLogged : true})
   }
 
   // Methods getting and setting user data into DB
@@ -515,6 +519,9 @@ class Geoguide extends Component {
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
     })
+    var nextIndex = indicatorsList.indexOf(indicator) + 1
+    var nextIndicator = indicatorsList[nextIndex]
+    this.setNexIndicator(nextIndicator)
   }
 
   // Getting nextIndicator to be set into dB when starting the app
@@ -531,7 +538,12 @@ class Geoguide extends Component {
 
   // Setting nextIndicator to be set into dB
   setNexIndicator = (nextIndicator) => {
-    // database.ref('users')
+    database.ref('users').child(this.state.userid).update({
+      'nextIndicator':nextIndicator
+    }).then(() => {
+      this.setState({nextIndicator : nextIndicator})
+      localStorage.setItem('nextIndicator',nextIndicator)
+    })
   }
 
   // Methods handling page changes and rendering
@@ -577,7 +589,7 @@ class Geoguide extends Component {
     }
 
   render() {
-    console.log(this.state.userid);
+    // console.log(this.state.userid);
 
     // Storing navbar into variable, completed only if page content is not a quiz
     var navbar = '';
@@ -593,7 +605,7 @@ class Geoguide extends Component {
           <span>Logué en tant que {this.state.username}</span>
           <PageContent
             // Passing information about user
-            userid={this.state.userid} username={this.state.username} updateUserData={this.updateUserData}
+            userid={this.state.userid} username={this.state.username} updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator}
             // Pasing methods about changing pages and rendering
             showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} renderNavbar = {this.renderNavbar}
             // Passing methods about map

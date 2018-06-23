@@ -14,8 +14,6 @@ var config = {
   messagingSenderId: "920767176331"
 };
 
-let initialIndicators = ['i11','i12','i13','i14','i31'];
-
 // Setting a reference to the database service
 var database = firebase.database();
 
@@ -34,10 +32,20 @@ class Questionnary extends Component {
     let index = e.target.attributes.keyvalue.value - 1;
     let value = e.target.value
     let updatedArray = this.state.slidersArray;
-    //
+    // Setting selected value to corresponding index
     updatedArray[index] = value
     // Replace updated array into component state
     this.setState({slidersArray : updatedArray})
+  }
+
+  updateIndex = () => {
+    // Saving this's Component into self variable for handling callback
+    var self = this;
+    questionnaries.forEach(function(item){
+      if(item.indicator == localStorage.getItem('nextIndicator'))
+      self.setState({indexOfIndicator : questionnaries.indexOf(item) + 1})
+      return
+    })
   }
 
   componentDidMount(){
@@ -56,9 +64,9 @@ class Questionnary extends Component {
   render() {
     // Saving this's Component into self variable for handling callback
     var self = this;
+
     // nextOne = object corresponding to the current indicator to be set
-    // var nextOne = questionnaries[this.state.indexOfIndicator];
-    var nextOne = questionnaries[6]
+    var nextOne = questionnaries[this.state.indexOfIndicator];
     // Elements to be placed into the page
     var title = nextOne.title
     var question = nextOne.question
@@ -81,8 +89,8 @@ class Questionnary extends Component {
         if(nextOne.type == 'unique'){
           options.push(
             <button key = {i} onClick = {function(){
-              // self.props.setNexIndicator()
               self.props.updateUserData(indicator, optionValue)
+              self.updateIndex()
             }}>{optionValue}
           </button>,
           <br/>
@@ -98,7 +106,10 @@ class Questionnary extends Component {
               </input>
             </div>
           )
-          quitButton = <button onClick={self.props.updateUserData(indicator, [1,3])}>Poursuivre</button>
+          // Button pushing values into dB
+          quitButton = <button onClick={
+            self.props.updateUserData(indicator, this.state.slidersArray)
+          }>Poursuivre</button>
         }
       }
     }
