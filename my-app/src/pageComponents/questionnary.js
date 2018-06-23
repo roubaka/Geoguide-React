@@ -42,9 +42,11 @@ class Questionnary extends Component {
     // Saving this's Component into self variable for handling callback
     var self = this;
     questionnaries.forEach(function(item){
-      if(item.indicator == localStorage.getItem('nextIndicator'))
-      self.setState({indexOfIndicator : questionnaries.indexOf(item) + 1})
-      return
+      if(item.indicator == localStorage.getItem('nextIndicator')){
+        self.setState({indexOfIndicator : questionnaries.indexOf(item)})
+        console.log(self.props.nextIndicator);
+        return
+      }
     })
   }
 
@@ -90,7 +92,9 @@ class Questionnary extends Component {
           options.push(
             <button key = {i} onClick = {function(){
               self.props.updateUserData(indicator, optionValue)
-              self.updateIndex()
+              setTimeout(function(){
+                self.updateIndex()
+              },500)
             }}>{optionValue}
           </button>,
           <br/>
@@ -107,9 +111,12 @@ class Questionnary extends Component {
             </div>
           )
           // Button pushing values into dB
-          quitButton = <button onClick={
-            self.props.updateUserData(indicator, this.state.slidersArray)
-          }>Poursuivre</button>
+          quitButton = <button onClick={function(){
+              self.props.updateUserData(indicator, self.state.slidersArray)
+              setTimeout(function(){
+                self.updateIndex()
+              },500)
+            }}>Poursuivre</button>
         }
       }
     }

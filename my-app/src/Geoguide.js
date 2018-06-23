@@ -44,10 +44,14 @@ import 'leaflet/dist/leaflet.css';
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 
+// Setting the first indicator List to be checked in this order
+let indicatorsList = ['i11','i12','i13','i14','finished'];
 
-let indicatorsList = ['i11','i12','i13','i14'];
 // Converting options keys to an array in order to map() through it
 var optionsArray = Object.keys(options);
+
+// mapShown variable set to false for reversing coordinates on first rendering
+var mapShown = false;
 
 // -------------------------------------------------- //
 // -------------------------------------------------- //
@@ -269,11 +273,12 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-        if (d < 0.0002){
-          // if(d < 0.002){
+        // if (d < 0.0002){
+          if(d < 0.002){
           // Actual stop number
           console.log(stop.properties.id);
-          self.props.onStopReached(stop.properties.id);
+          self.props.checkUserData('i15')
+          // self.props.onStopReached(stop.properties.id);
         }
     })
   }
@@ -319,7 +324,7 @@ class PageContent extends Component {
     })
   }
 
-  // When the map is loaded, get user location
+  // When the page is loaded, get user location
   componentDidMount(){
     this.setState({mapShown : true})
     //this.refs.map.leafletElement.locate()
@@ -351,21 +356,20 @@ class PageContent extends Component {
     // -------------------------------------------------- //
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
-      var mapShown = this.state.mapShown
 
-      // Track - trackComplete variable for storing track with correct coordinates
-      var trackComplete = [];
-      // Reversing latlng coordinates
-      track.features.forEach(function(segment){
+    // trackComplete variable for storing track with correct coordinates
+    var trackComplete = [];
+    // Reversing latlng coordinates
+    track.features.forEach(function(segment){
+      if(mapShown == false){
         // forEach feature, reverse each point coordinates
         segment.geometry.coordinates.forEach(function(point){
-          if(mapShown == false){
-            point.reverse();
-          }
+          point.reverse();
         })
-        // Add reversed coordinates into trackComplete variable
-        trackComplete.push(segment.geometry.coordinates);
-      });
+      }
+      // Add reversed coordinates into trackComplete variable
+      trackComplete.push(segment.geometry.coordinates);
+    });
 
     return(
         <div ref='mymap'>
@@ -394,6 +398,7 @@ class PageContent extends Component {
               <button onClick={this.focusLocation}>Centrer</button>
             </Control>
           </Map>
+          {mapShown = true}
         </div>
     )
 
@@ -507,7 +512,7 @@ class Geoguide extends Component {
       if(indicatorExists == 'undefined'){
         this.setState({'currentPage' : 'Questionnaire','renderNavbar':false})
       } else {
-        this.setState({'currentPage' : 'Carte','renderNavbar':true})
+        this.setState({'currentPage' : 'Carte','renderNavbar':true,'mapShown' : true})
       }
     })
   }
@@ -519,9 +524,20 @@ class Geoguide extends Component {
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
     })
+    // Get index of next indicator to be cheked into Indicator List
     var nextIndex = indicatorsList.indexOf(indicator) + 1
+    // Get value of the corresponding indicator
     var nextIndicator = indicatorsList[nextIndex]
-    this.setNexIndicator(nextIndicator)
+    console.log(nextIndicator);
+    // If next value is finished, go back to map
+    if(nextIndicator == 'finished'){
+      this.setState({'currentPage' : 'Carte','renderNavbar':true})
+      this.setNexIndicator('i15')
+      indicatorsList = ['i15','i16','i17']
+    // Else, set next indicator as indicator to be checked
+    } else {
+      this.setNexIndicator(nextIndicator)
+    }
   }
 
   // Getting nextIndicator to be set into dB when starting the app
@@ -605,7 +621,9 @@ class Geoguide extends Component {
           <span>Logué en tant que {this.state.username}</span>
           <PageContent
             // Passing information about user
-            userid={this.state.userid} username={this.state.username} updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator}
+            userid={this.state.userid} username={this.state.username}
+            // Passing methods on handling interaction between user data and database
+            updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator} checkUserData={this.checkUserData}
             // Pasing methods about changing pages and rendering
             showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} renderNavbar = {this.renderNavbar}
             // Passing methods about map
