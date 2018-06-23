@@ -265,7 +265,7 @@ class PageContent extends Component {
       this.setState({center: [position.coords.latitude,position.coords.longitude]});
     }
 
-    // Check for each feature if the
+    // Check for each stop feature if the distance is smaller than 150m to render spot content
     stops.features.forEach(function(stop){
       // Store coordinates of each points as variable S
       var s = stop.geometry.coordinates;
@@ -273,14 +273,29 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-        // if (d < 0.0002){
-          if(d < 0.002){
+        if (d < 0.0002){
+          // if(d < 0.002){
           // Actual stop number
           console.log(stop.properties.id);
-          self.props.checkUserData('i15')
-          // self.props.onStopReached(stop.properties.id);
+          self.props.onStopReached(stop.properties.id);
         }
     })
+
+    // Check for each questionStop feature if the distance is smaller than 150m to render questions
+    questionStops.features.forEach(function(stop){
+      // Store coordinates of each points as variable S
+      var s = stop.geometry.coordinates;
+      // Pythagore function - calculate distance betweeen location and every stop
+      var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
+        // If distance, trigger showSpotContent function
+        // NB default parameter for distance is 0.0002
+          if(d < 0.002){
+          // Actual stop number
+          self.props.checkUserData(indicatorsList[0])
+        }
+    })
+
+
   }
 
   // Location error handling
