@@ -23,7 +23,7 @@ class Questionnary extends Component {
     this.state = {
       userid : localStorage.getItem('userid'),
       indexOfIndicator : 0,
-      slidersArray : new Array(5)
+      slidersArray : [1,1,1,1,1]
     }
   }
 

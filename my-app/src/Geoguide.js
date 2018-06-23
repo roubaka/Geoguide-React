@@ -53,12 +53,14 @@ var indicatorString;
 var indicatorsList;
 var nextQuestionStop = 0;
 
+// Global function for updating indicators list
 var getIndicatorsList = (i) => {
   indicatorString = questionStops.features[i].properties.indicator;
   indicatorsList = indicatorString.split(",").map(String);
   return indicatorsList
 }
 
+// Initializing indicator list as the first ones to be get
 getIndicatorsList(nextQuestionStop);
 
 // Reversing coordinates of questionStops features
@@ -67,6 +69,9 @@ questionStops.features.map(function(stop){
   var coords = stop.geometry.coordinates
   coords.reverse();
 })
+
+// Setting up array to be saved into localStorage for indicator i33
+localStorage.setItem('quizResult',"0,0,0,0,0,0,0,0,0,0,0")
 
 // mapShown variable set to false for reversing coordinates on first rendering
 var mapShown = false;
@@ -113,6 +118,17 @@ class StopContent extends Component{
   handleQuiz = () => {
     this.setState({answeredQuiz : true})
     this.props.renderNavbar(true)
+    // Handling update of the ansers into db
+    // NB to be tested
+    // var quizResult = Array.from(localStorage.getItem('quizResult'))
+    // quizResult[currentData] = currentData.correct
+    // localStorage.setItem('quizResult',quizResult)
+    // database.ref('/users').child(self.props.userid).update({
+    //   'i33' : quizResult
+    // })
+    database.ref('/users').child(this.props.userid).update({
+      'i33' : 'maquessi?'
+    })
   }
 
   // Shuffling the answers of the quiz
@@ -179,6 +195,9 @@ class StopContent extends Component{
         // Preparing answers
         var answers = []
         for(let i = 0; i < 4; i++){
+          var self = this;
+
+          // Variable storing anserstyling
           let answerStyle;
           // If user answered question change style
           if(this.state.answeredQuiz){
@@ -195,12 +214,11 @@ class StopContent extends Component{
             this.shuffleAnswers(answers);
           }
           // In any case, render td + button
-          var answerTag = <td><button style = {answerStyle} answernumber = {`${i+1}`} width = '200px' onClick = {this.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
+          var answerTag = <td><button style = {answerStyle} answernumber = {`${i+1}`} width = '200px' onClick = {self.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
           answers.push(answerTag)
           // If user has answered the question, add button to go back to map
           var backToMap = ''
           if(this.state.answeredQuiz){
-            var self = this;
             backToMap = <button onClick = {this.props.showMap}>Je continue mon chemin!</button>
           }
         }
@@ -224,7 +242,6 @@ class StopContent extends Component{
             {backToMap}
           </div>
       }
-
       return(postContent);
   }
 }
@@ -304,13 +321,11 @@ class PageContent extends Component {
       var s = stop.geometry.coordinates;
       // Pythagore function - calculate distance betweeen location and every stop
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
-        // If distance, trigger showSpotContent function
+        // If distance, trigger question function
         // NB default parameter for distance is 0.0002
           if(d < 0.005){
           // Actual stop number
-          console.log(self.props.content);
           if(self.props.content == 'Carte'){
-            console.log(stop.properties.id);
             self.props.checkUserData(indicatorsList[1])
             // self.props.checkUserData(indicatorsList[stop.properties.id])
           }
@@ -449,6 +464,8 @@ class PageContent extends Component {
     } else if(this.props.content == 'StopContent'){
       return(
         <StopContent
+          // Passing user information
+          userid = {this.props.userid}
           // Passing methods about changing pages and rendering
           showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
           // Passing tarckingLog method
@@ -544,12 +561,11 @@ class Geoguide extends Component {
       // console.log(snap.child(this.state.userid).val()[indicator]);
       indicatorExists = snap.child(this.state.userid).val()[indicator];
     }).then(() => {
-      console.log(indicatorExists);
       if(indicatorExists == 'undefined'){
-        console.log('questionnaire');
+        // console.log('questionnaire');
         this.setState({'currentPage' : 'Questionnaire','renderNavbar':false})
       } else {
-        console.log('carte');
+        // console.log('carte');
         this.setState({'currentPage' : 'Carte','renderNavbar':true,'mapShown' : true})
       }
     })
