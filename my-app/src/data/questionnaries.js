@@ -221,7 +221,7 @@ var questionnaries = [
  },
  {
    "indicator": "i45",
-   "type": "slider",
+   "type": "unique",
    "title": "",
    "question": "Le long du parcours du Géoguide, vous souhaitez avant tout",
    "option1": "En apprendre sur la ville et sa géographie",

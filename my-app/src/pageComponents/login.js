@@ -64,6 +64,7 @@ class Login extends Component {
   }
 
   handleClick = () => {
+    // NB: for the moment i31 & i32 are defined because the questions have not been created yet
     // If username doesn't exist in db
     if(this.state.validName){
       // Pushing new username into db - Store it into a variable
@@ -82,8 +83,8 @@ class Login extends Component {
         i23 : 'undefined',
         i24 : 'undefined',
         i25 : 'undefined',
-        i31 : 'undefined',
-        i32 : 'undefined',
+        i31 : 'later',
+        i32 : 'later',
         i33 : 'undefined',
         i41 : 'undefined',
         i42 : 'undefined',

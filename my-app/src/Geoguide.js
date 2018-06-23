@@ -31,6 +31,7 @@ import myIcons from './data/icons.js';
 import options from './data/options.js';
 import questionnaries from './data/questionnaries.js';
 import stops from './data/stops.js';
+import questionStops from './geodata/questionStops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
 
@@ -44,11 +45,28 @@ import 'leaflet/dist/leaflet.css';
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 
-// Setting the first indicator List to be checked in this order
-let indicatorsList = ['i11','i12','i13','i14','finished'];
-
 // Converting options keys to an array in order to map() through it
 var optionsArray = Object.keys(options);
+
+// Setting the first indicator List to be checked in this order
+var indicatorString;
+var indicatorsList;
+var nextQuestionStop = 0;
+
+var getIndicatorsList = (i) => {
+  indicatorString = questionStops.features[i].properties.indicator;
+  indicatorsList = indicatorString.split(",").map(String);
+  return indicatorsList
+}
+
+getIndicatorsList(nextQuestionStop);
+
+// Reversing coordinates of questionStops features
+questionStops.features.map(function(stop){
+  var id = stop.properties.id
+  var coords = stop.geometry.coordinates
+  coords.reverse();
+})
 
 // mapShown variable set to false for reversing coordinates on first rendering
 var mapShown = false;
@@ -250,7 +268,6 @@ class PageContent extends Component {
 
   // Updating location point and map focus when new location is found
   onLocationFound = (position) => {
-    console.log(position);
     this.setState({location: [position.coords.latitude,position.coords.longitude]});
     this.setState({locationAccuracy : position.coords.accuracy});
     // To avoid conflict when calling this on callback function
@@ -289,13 +306,16 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-          if(d < 0.002){
+          if(d < 0.005){
           // Actual stop number
-          self.props.checkUserData(indicatorsList[0])
+          console.log(self.props.content);
+          if(self.props.content == 'Carte'){
+            console.log(stop.properties.id);
+            self.props.checkUserData(indicatorsList[1])
+            // self.props.checkUserData(indicatorsList[stop.properties.id])
+          }
         }
     })
-
-
   }
 
   // Location error handling
@@ -303,7 +323,6 @@ class PageContent extends Component {
     // To avoid conflict when calling this on callback function
     // replace component's "this" as self variable
     var self = this;
-    console.log('position error');
     window.setTimeout(function(){
       navigator.geolocation.getCurrentPosition(self.onLocationFound, self.onLocationError);
     }, 1000);
@@ -391,7 +410,8 @@ class PageContent extends Component {
           {/* Map with initial parameters */}
           <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
             // Handling changed on focus when interacting with the map
-            onDragend={this.handlePan} onZoomend={this.handleZoom}>
+            onDragend={this.handlePan} onZoomend={this.handleZoom}
+            updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -524,9 +544,12 @@ class Geoguide extends Component {
       // console.log(snap.child(this.state.userid).val()[indicator]);
       indicatorExists = snap.child(this.state.userid).val()[indicator];
     }).then(() => {
+      console.log(indicatorExists);
       if(indicatorExists == 'undefined'){
+        console.log('questionnaire');
         this.setState({'currentPage' : 'Questionnaire','renderNavbar':false})
       } else {
+        console.log('carte');
         this.setState({'currentPage' : 'Carte','renderNavbar':true,'mapShown' : true})
       }
     })
@@ -536,6 +559,8 @@ class Geoguide extends Component {
   // indicator corresponds to i11, i12 etc. values
   // value corresponds to the value linked to the specific indicator
   updateUserData = (indicator,value) => {
+    // Saving this's Component into self variable for handling callback
+    var self = this
     database.ref('/users').child(this.state.userid).update({
       [indicator] : value
     })
@@ -546,12 +571,14 @@ class Geoguide extends Component {
     console.log(nextIndicator);
     // If next value is finished, go back to map
     if(nextIndicator == 'finished'){
-      this.setState({'currentPage' : 'Carte','renderNavbar':true})
-      this.setNexIndicator('i15')
-      indicatorsList = ['i15','i16','i17']
-    // Else, set next indicator as indicator to be checked
+      self.setState({'currentPage' : 'Carte','renderNavbar':true})
+      nextQuestionStop++;
+      getIndicatorsList(nextQuestionStop)
+      self.setNexIndicator(indicatorsList[0])
+      // Else, set next indicator as indicator to be checked
     } else {
-      this.setNexIndicator(nextIndicator)
+      console.log('not finished');
+      self.setNexIndicator(nextIndicator)
     }
   }
 

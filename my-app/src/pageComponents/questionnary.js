@@ -41,13 +41,15 @@ class Questionnary extends Component {
   updateIndex = () => {
     // Saving this's Component into self variable for handling callback
     var self = this;
-    questionnaries.forEach(function(item){
-      if(item.indicator == localStorage.getItem('nextIndicator')){
-        self.setState({indexOfIndicator : questionnaries.indexOf(item)})
-        console.log(self.props.nextIndicator);
-        return
-      }
-    })
+    if(localStorage.getItem('nextIndicator') != 'finished'){
+      questionnaries.forEach(function(item){
+        if(item.indicator == localStorage.getItem('nextIndicator')){
+          self.setState({indexOfIndicator : questionnaries.indexOf(item)})
+          console.log(self.props.nextIndicator);
+          return
+        }
+      })
+    }
   }
 
   componentDidMount(){
@@ -97,7 +99,7 @@ class Questionnary extends Component {
               },500)
             }}>{optionValue}
           </button>,
-          <br/>
+          <br key={i+5}/>
         )
         // Rendering sliders
         } else {
