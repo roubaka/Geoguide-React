@@ -70,9 +70,6 @@ questionStops.features.map(function(stop){
   coords.reverse();
 })
 
-// Setting up array to be saved into localStorage for indicator i33
-localStorage.setItem('quizResult',"0,0,0,0,0,0,0,0,0,0,0")
-
 // mapShown variable set to false for reversing coordinates on first rendering
 var mapShown = false;
 
@@ -115,20 +112,20 @@ class StopContent extends Component{
   }
 
   // Method handling answering of the quiz
-  handleQuiz = () => {
-    this.setState({answeredQuiz : true})
-    this.props.renderNavbar(true)
+  handleQuiz = (e) => {
     // Handling update of the ansers into db
-    // NB to be tested
-    // var quizResult = Array.from(localStorage.getItem('quizResult'))
-    // quizResult[currentData] = currentData.correct
-    // localStorage.setItem('quizResult',quizResult)
-    // database.ref('/users').child(self.props.userid).update({
-    //   'i33' : quizResult
-    // })
-    database.ref('/users').child(this.props.userid).update({
-      'i33' : 'maquessi?'
-    })
+    if(this.state.answeredQuiz == false){
+      var answer = e.target.attributes.getNamedItem('ciao').value;
+      var quizResult = JSON.parse(localStorage.getItem('quizResult'))
+      quizResult[this.props.stop-6] = answer
+      localStorage.setItem('quizResult',JSON.stringify(quizResult))
+      database.ref('/users').child(this.props.userid).update({
+        'i33' : quizResult
+      }).then(() => {
+        this.setState({answeredQuiz : true})
+        this.props.renderNavbar(true)
+      })
+    }
   }
 
   // Shuffling the answers of the quiz
@@ -144,7 +141,6 @@ class StopContent extends Component{
   render(){
     // Compensate for decay in values - initializing at 6
     var arrayDecay = 6
-    console.log(this.props.stop);
 
     // storing id stop in currentData
     var currentData = stopsData[this.props.stop - arrayDecay]
@@ -192,11 +188,14 @@ class StopContent extends Component{
           backgroundColor : 'lightgreen'
         }
 
-        // Preparing answers
+        // Preparing answers possibilities into array
         var answers = []
+
         for(let i = 0; i < 4; i++){
           var self = this;
 
+          // Preparing variable to be given for
+          var answer = (i+1 == currentData.correct) ? 'true' : 'false';
           // Variable storing anserstyling
           let answerStyle;
           // If user answered question change style
@@ -214,7 +213,12 @@ class StopContent extends Component{
             this.shuffleAnswers(answers);
           }
           // In any case, render td + button
-          var answerTag = <td><button style = {answerStyle} answernumber = {`${i+1}`} width = '200px' onClick = {self.handleQuiz}>{currentData[`answer${i+1}`]}</button></td>
+          var answerTag =
+          <td>
+            <button style={answerStyle} answernumber={`${i+1}`} ciao={answer} width='200px' onClick={self.handleQuiz}>
+              {currentData[`answer${i+1}`]}
+            </button>
+          </td>
           answers.push(answerTag)
           // If user has answered the question, add button to go back to map
           var backToMap = ''
@@ -543,6 +547,7 @@ class Geoguide extends Component {
     // initialIndicators.forEach(function(item){
     //   self.checkUserData(item);
     // })
+    this.getquizResults()
     this.initializeNextIndicator()
     // Save this's comopnent as self variabel for callback function
     var self = this;
@@ -617,6 +622,16 @@ class Geoguide extends Component {
     }).then(() => {
       this.setState({nextIndicator : nextIndicator})
       localStorage.setItem('nextIndicator',nextIndicator)
+    })
+  }
+
+  // Setting up array to be saved into localStorage for indicator i33
+  getquizResults = () =>{
+    var quizResult = '';
+    database.ref('/users').once('value', snap =>{
+      quizResult = snap.child(this.state.userid).val().i33
+    }).then(() => {
+      localStorage.setItem('quizResult',JSON.stringify(quizResult))
     })
   }
 
