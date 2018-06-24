@@ -99,8 +99,14 @@ class StopContent extends Component{
 
   // Method showing extended content
   extendContent = () => {
-    console.log(this.props);
-    this.setState({content:'extended'})
+    var stopsExtended = JSON.parse(localStorage.getItem('i22'))
+    console.log(stopsExtended);
+    stopsExtended[this.props.stop-6] = 'extended'
+    localStorage.setItem('i22',JSON.stringify(stopsExtended))
+    database.ref('/users').child(this.props.userid).update({
+      'i22' : stopsExtended
+    }).then(this.setState({content:'extended'}))
+
     // Log into DB - interaction click, extendedContent of the post
     this.props.trackInteraction('IN','click','extendedContent',this.props.stop)
   }
@@ -116,9 +122,9 @@ class StopContent extends Component{
     // Handling update of the ansers into db
     if(this.state.answeredQuiz == false){
       var answer = e.target.attributes.getNamedItem('ciao').value;
-      var quizResult = JSON.parse(localStorage.getItem('quizResult'))
+      var quizResult = JSON.parse(localStorage.getItem('i33'))
       quizResult[this.props.stop-6] = answer
-      localStorage.setItem('quizResult',JSON.stringify(quizResult))
+      localStorage.setItem('i33',JSON.stringify(quizResult))
       database.ref('/users').child(this.props.userid).update({
         'i33' : quizResult
       }).then(() => {
@@ -547,7 +553,8 @@ class Geoguide extends Component {
     // initialIndicators.forEach(function(item){
     //   self.checkUserData(item);
     // })
-    this.getquizResults()
+    this.getArrayValues('i22')
+    this.getArrayValues('i33')
     this.initializeNextIndicator()
     // Save this's comopnent as self variabel for callback function
     var self = this;
@@ -625,13 +632,14 @@ class Geoguide extends Component {
     })
   }
 
-  // Setting up array to be saved into localStorage for indicator i33
-  getquizResults = () =>{
-    var quizResult = '';
+  // Setting up array to be saved into localStorage for indicator i22 and i33
+  getArrayValues = (indicator) =>{
+    var firebaseArray = '';
     database.ref('/users').once('value', snap =>{
-      quizResult = snap.child(this.state.userid).val().i33
-    }).then(() => {
-      localStorage.setItem('quizResult',JSON.stringify(quizResult))
+      firebaseArray = snap.child(this.state.userid).val()[indicator]
+    }).then(() =>{
+      console.log(firebaseArray)
+      localStorage.setItem(indicator,firebaseArray)
     })
   }
 
