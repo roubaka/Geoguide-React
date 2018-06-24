@@ -121,7 +121,7 @@ class StopContent extends Component{
   handleQuiz = (e) => {
     // Handling update of the ansers into db
     if(this.state.answeredQuiz == false){
-      var answer = e.target.attributes.getNamedItem('ciao').value;
+      var answer = e.target.attributes.getNamedItem('answer').value;
       var quizResult = JSON.parse(localStorage.getItem('i33'))
       quizResult[this.props.stop-6] = answer
       localStorage.setItem('i33',JSON.stringify(quizResult))
@@ -221,7 +221,7 @@ class StopContent extends Component{
           // In any case, render td + button
           var answerTag =
           <td>
-            <button style={answerStyle} answernumber={`${i+1}`} ciao={answer} width='200px' onClick={self.handleQuiz}>
+            <button style={answerStyle} answernumber={`${i+1}`} answer={answer} width='200px' onClick={self.handleQuiz}>
               {currentData[`answer${i+1}`]}
             </button>
           </td>
@@ -317,10 +317,9 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-        if (d < 0.0002){
+        if (localStorage.getItem(('stop'+stop.properties.id) && d < 0.0002)){
           // if(d < 0.002){
-          // Actual stop number
-          console.log(stop.properties.id);
+          localStorage.setItem('stop'+stop.properties.id,'visited')
           self.props.onStopReached(stop.properties.id);
         }
     })
@@ -333,7 +332,8 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger question function
         // NB default parameter for distance is 0.0002
-          if(d < 0.005){
+          // if(d < 0.005){
+          if(d < 0.0002){
           // Actual stop number
           if(self.props.content == 'Carte'){
             self.props.checkUserData(indicatorsList[1])
@@ -639,7 +639,7 @@ class Geoguide extends Component {
       firebaseArray = snap.child(this.state.userid).val()[indicator]
     }).then(() =>{
       console.log(firebaseArray)
-      localStorage.setItem(indicator,firebaseArray)
+      localStorage.setItem(indicator,JSON.stringify(firebaseArray))
     })
   }
 
