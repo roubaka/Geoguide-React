@@ -153,6 +153,21 @@ class StopContent extends Component{
     // console.log(currentData[this.props.stop].img_swip1)
     var postContent;
 
+    // Complementary images for extended content, based on swip in original version
+    var img_swipList = ['img_swip1','img_swip2','img_swip3','img_swip4','img_swip5'];
+    var img_swip = [];
+
+    img_swipList.forEach(function(img){
+      if(currentData[img]){
+        let imgSrc = currentData[img];
+        img_swip.push(
+          <div>
+            <img src = {require(`./img/${imgSrc}`)} width = {'auto'} height = {'300px'}/><br/>
+          </div>
+        )
+      }
+    })
+
       // Conditional rendering for StopContent
 
       // 1) Rendering basic content
@@ -172,10 +187,10 @@ class StopContent extends Component{
         postContent =
           <div>
             <h1>{currentData.title}</h1>
-            <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'300px'}/>
+            <img src = {require(`./img/${currentData.img_title}`)} width = {'auto'} height = {'300px'}/>
             <p>{currentData.text1_p1}</p>
             <p>{currentData.text1_p2}</p>
-            {/* <img src = {require(`./img/${currentData[this.props.stop].img_swip1}`)} width = {'auto'} height = {'300px'}/> */}
+            <div>{img_swip}</div>
             <p>{currentData.text2_p1}</p>
             <p>{currentData.text2_p2}</p>
             <span>{currentData.img_swip_legend}</span>
