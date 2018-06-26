@@ -154,7 +154,7 @@ class StopContent extends Component{
     var postContent;
 
     // Complementary images for extended content, based on swip in original version
-    var img_swipList = ['img_swip1','img_swip2','img_swip3','img_swip4','img_swip5'];
+    var img_swipList = ['img_swip1','img_swip2','img_swip3','img_swip4','img_swip5','img_swip6','img_swip7','img_swip8'];
     var img_swip = [];
 
     img_swipList.forEach(function(img){
@@ -648,13 +648,12 @@ class Geoguide extends Component {
   }
 
   // Setting up array to be saved into localStorage for indicator i22 and i33
-  getArrayValues = (indicator) =>{
+  getArrayValues = (indicator) => {
     var firebaseArray = '';
     database.ref('/users').once('value', snap =>{
       firebaseArray = snap.child(this.state.userid).val()[indicator]
     }).then(() =>{
-      console.log(firebaseArray)
-      localStorage.setItem(indicator,JSON.stringify(firebaseArray))
+      localStorage.setItem(indicator,firebaseArray)
     })
   }
 
