@@ -1,4 +1,4 @@
-
+[
  {
    "id": 6,
    "name": "Place du Vallon",
@@ -171,7 +171,7 @@
    "title": "Découvrez l'un des cours d'eau enterré de Lausanne",
    "text1_p1": "Entre 1812 et 1840, des travaux de voûtage et de comblement ont fait disparaître la Louve du paysage urbain. Pour l'apercevoir, il faut se rendre dans le parking souterrain de la Riponne (entrée depuis la station de métro) où un regard permet de l'observer sur un petit tronçon. Selon les conditions météorologiques, vous apercevez un petit ruisseau ou un cours d'eau turbulent.",
    "text1_p2": "",
-   "text2_p1": "Une station de mesure installée sur la Louve permet de visualiser son débit, c'est-à-dire la quantité d'eau qui s'écoule en une seconde en un point donné de la rivière. Le débit de la Louve est fortement influencé par les travaux d'aménagements et les effets de l'urbanisation. Par rapport à un cours d'eau similaire à l'état naturel, les pics de débit des crues de la Louve sont beaucoup plus accentués (voir figure). Cet effet est dû à l'imperméabilisation des surfaces construites qui empêchent en grande partie l'infiltration des eaux de pluies. Ces dernières vont directement rejoindre le cours d'eau au lieu d'être retenues dans le sol.",
+   "text2_p1": "Une station de mesure installée sur la Louve permet de visualiser son débit, c'est-à-dire la quantité d'eau qui s'écoule en une seconde en un point donné de la rivière. Le débit de la Louve est fortement influencé par les travaux d'aménagements et les effets de l'urbanisation. Par rapport à un cours d'eau similaire à l'état naturel, les pics de débit des crues de la Louve sont beaucoup plus accentués. Cet effet est dû à l'imperméabilisation des surfaces construites qui empêchent en grande partie l'infiltration des eaux de pluies. Ces dernières vont directement rejoindre le cours d'eau au lieu d'être retenues dans le sol.",
    "text2_p2": "Des travaux ont aussi été entrepris pour dériver les eaux claires de la Louve jusqu'au déversoir situé sous la Vallée de la Jeunesse. La Louve se trouve ainsi privée d'une part de son eau, ce qui réduit surtout les pics de débit. Ce que vous observez depuis le regard n'est que le résidu de la Louve qui, autrefois, traversait la ville à ciel ouvert.",
    "interaction": "Je veux voir la Louve souterraine!",
    "followtrack": "Je préfère continuer mon chemin",
@@ -184,7 +184,7 @@
    "answer4": "L'imperméabilisation des sols réduit l'infiltration des eaux de pluie ",
    "correct": 1,
    "img_title": "poste_10.jpg",
-   "img_swip1": "fig_10a.jpg",
+   "img_swip1": "",
    "img_swip1_legend": "",
    "img_swip2": "",
    "img_swip2_legend": "",
@@ -351,7 +351,7 @@
    "img_swip1": "fig_14a.jpg",
    "img_swip1_legend": "Schéma de la géologie du Flon, avec la moraine de Montbenon déviant la rivière de sa route vers le lac.",
    "img_swip2": "fig_14b.jpg",
-   "img_swip2_legend": "Illustation de la vallée du Flon avant le remblaiement du. On y voit les deux étages d'arches que comportait le Grand Pont à l'origine.",
+   "img_swip2_legend": "Illustation de la vallée du Flon avant son remblaiement. On y voit les deux étages d'arches que comportait le Grand Pont à l'origine.",
    "img_swip3": "",
    "img_swip3_legend": "",
    "img_swip4": "",
@@ -381,12 +381,12 @@
    "interaction": "Les glaciers forment des moraines mais comment?",
    "followtrack": "Je continue mon chemin",
    "question_subject": "Age relatif des deux moraines",
-   "question": "La quelle de ces deux moraines est la plus récente? ",
+   "question": "Entre la moraine de Montenon et celle de Montriod, laquelle est la plus récente? ",
    "type_question": "single",
    "answer1": "Celle de Montriod ",
    "answer2": "Celle de Montbenon ",
-   "answer3": "",
-   "answer4": "",
+   "answer3": "Il est impossible de dater des moraines glaciaires",
+   "answer4": "Elles ont les deux le même âge",
    "correct": 1,
    "img_title": "poste_15.jpg",
    "img_swip1": "fig_15a.jpg",
@@ -409,3 +409,4 @@
    "img_swip9_legend": "",
    "remarque": ""
  }
+]

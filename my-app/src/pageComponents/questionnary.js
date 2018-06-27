@@ -79,7 +79,16 @@ class Questionnary extends Component {
     // Optional button quit for slider questionnary
     var quitButton = ''
 
-    // Iterating through values
+    // adding image component for picture recognition quesions
+    var img;
+    if(nextOne.img){
+      img =
+      <div>
+        <img src = {require(`../img/${nextOne.img}`)} width = {'auto'} height = {'auto'}/><br/>
+      </div>
+    }
+
+    // Iterating through values - maximum 5 options
     for (var i = 1; i < 6; i++){
       // Related indicator to be set
       let indicator = nextOne.indicator
@@ -127,6 +136,7 @@ class Questionnary extends Component {
       <div>
         <h3>{title}</h3>
         <h2>{question}</h2>
+        {img}
         {options}
         <br/>
         {quitButton}

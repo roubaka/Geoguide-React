@@ -3,13 +3,13 @@ var questionStops = {
   "name": "questionStops",
   "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
   "features": [
-  { "type": "Feature", "properties": { "id": 1, "indicator": "i11,i12,i13,i45,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.639063779222776, 46.526654627785781 ] } },
+  { "type": "Feature", "properties": { "id": 1, "indicator": "i11,i12,i13,i45,i311,i312,i313,i315,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.639063779222776, 46.526654627785781 ] } },
   { "type": "Feature", "properties": { "id": 2, "indicator": "i15,i16,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.635712211733489, 46.524472317806847 ] } },
-  { "type": "Feature", "properties": { "id": 3, "indicator": "i14,i41,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.633555240251376, 46.522816131061589 ] } },
-  { "type": "Feature", "properties": { "id": 4, "indicator": "i25,i42,i43,i44,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.632251232647282, 46.521215204975626 ] } },
+  { "type": "Feature", "properties": { "id": 3, "indicator": "i14,i25,i411,i412,i413,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.633555240251376, 46.522816131061589 ] } },
+  { "type": "Feature", "properties": { "id": 4, "indicator": "i42,i43,i44,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.632251232647282, 46.521215204975626 ] } },
   { "type": "Feature", "properties": { "id": 5, "indicator": "i17,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.631438460784457, 46.520993960040578 ] } },
   { "type": "Feature", "properties": { "id": 6, "indicator": "i18,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.628254360025148, 46.520001419592603 ] } },
-  { "type": "Feature", "properties": { "id": 7, "indicator": "i21,i24,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.626454650900319, 46.519184019726957 ] } }
+  { "type": "Feature", "properties": { "id": 7, "indicator": "i21,i24,i321,i322,i323,i325,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.626454650900319, 46.519184019726957 ] } }
   ]
 }
 

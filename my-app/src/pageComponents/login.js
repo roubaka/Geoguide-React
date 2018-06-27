@@ -79,14 +79,22 @@ class Login extends Component {
         i17 : 'undefined',
         i18 : 'undefined',
         i21 : 'undefined',
-        i22 : '[0,0,0,0,0,0,0,0,0,0]',
+        i22 : [0,0,0,0,0,0,0,0,0,0],
         i23 : 'undefined',
         i24 : 'undefined',
         i25 : 'undefined',
-        i31 : '[0,0,0,0,0]',
-        i32 : '[0,0,0,0,0]',
-        i33 : '[0,0,0,0,0,0,0,0,0,0]',
-        i41 : 'undefined',
+        i311 : 'undefined',
+        i312 : 'undefined',
+        i313 : 'undefined',
+        i315 : 'undefined',
+        i321 : 'undefined',
+        i322 : 'undefined',
+        i323 : 'undefined',
+        i325 : 'undefined',
+        i33 : [0,0,0,0,0,0,0,0,0,0],
+        i411 : 'undefined',
+        i412 : 'undefined',
+        i413 : 'undefined',
         i42 : 'undefined',
         i43 : 'undefined',
         i44 : 'undefined',
@@ -119,20 +127,19 @@ class Login extends Component {
     if(this.state.focusedInput && this.state.username != null){
       if (this.state.validName == true){
         // show username as valid
-        validation = <span>Ce nom d'utilisateur est disponible</span>
+        validation = <p>Ce nom d'utilisateur est disponible</p>
       } else {
         // show username as invalid
-        validation = <span>Ce nom d'utilisateur existe déjà,<br />êtes vous sûr que c'est bien vous?</span>
+        validation = <p className="login">Ce nom d'utilisateur existe déjà,<br />êtes vous sûr que c'est bien vous?</p>
         inputStyling = {backgroundColor:'red'};
       }
     }
 
     return (
       <div>
-        <h2>Bienvenue dans le Géoguide Lausanne</h2>
-        <span>Avant de commencer, il faut créer un nom d'utilisateur</span>
-        <input type="text" required = "true" defaultValue = "Entrez votre nom"
-          style = {inputStyling}
+        <h1>Bienvenue dans le Géoguide Lausanne</h1>
+        <p className="login">Avant de commencer, veuillez vous connecter avec votre nom d'utilisateur</p>
+        <input className="login" type="text" required = "true" defaultValue = "Entrez votre nom"
           onChange = {this.handleChange} onFocus = {this.handleFocus}>
         </input>
         <button onClick = {this.handleClick}>
