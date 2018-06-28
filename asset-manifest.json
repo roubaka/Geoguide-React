@@ -1,8 +1,9 @@
 {
   "main.css": "static/css/main.2f9c333f.css",
   "main.css.map": "static/css/main.2f9c333f.css.map",
-  "main.js": "static/js/main.1e9e64df.js",
-  "main.js.map": "static/js/main.1e9e64df.js.map",
+  "main.js": "static/js/main.328b443b.js",
+  "main.js.map": "static/js/main.328b443b.js.map",
+  "static/media/favicon.ico": "static/media/favicon.c92b85a5.ico",
   "static/media/fig_1.jpg": "static/media/fig_1.8d116fed.jpg",
   "static/media/fig_10a.jpg": "static/media/fig_10a.c6bbf19f.jpg",
   "static/media/fig_11a.gif": "static/media/fig_11a.ac649620.gif",
@@ -98,5 +99,6 @@
   "static/media/quiz_12a.jpg": "static/media/quiz_12a.5cccf3be.jpg",
   "static/media/quiz_12b.jpg": "static/media/quiz_12b.1df2c4b9.jpg",
   "static/media/quiz_12c.jpg": "static/media/quiz_12c.9bd12526.jpg",
-  "static/media/quiz_12d.jpg": "static/media/quiz_12d.2d828c1b.jpg"
+  "static/media/quiz_12d.jpg": "static/media/quiz_12d.2d828c1b.jpg",
+  "static/media/react_orange.png": "static/media/react_orange.ae385274.png"
 }
