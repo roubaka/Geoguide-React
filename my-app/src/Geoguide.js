@@ -107,7 +107,7 @@ class StopContent extends Component{
     }).then(this.setState({content:'extended'}))
 
     // Log into DB - interaction click, extendedContent of the post
-    this.props.trackInteraction('IN','click','extendedContent',this.props.stop)
+    this.props.trackInteraction('i22 stop'+this.props.stop,'click','extended content')
   }
 
   // Method showing quiz content
@@ -129,8 +129,13 @@ class StopContent extends Component{
       }).then(() => {
         this.setState({answeredQuiz : true})
         this.props.renderNavbar(true)
+        this.props.trackInteraction('i33 stop'+[this.props.stop],'click','answered quiz')
       })
     }
+  }
+
+  handleScroll = (e) => {
+    console.log(e);
   }
 
   // Shuffling the answers of the quiz
@@ -173,7 +178,7 @@ class StopContent extends Component{
       // 1) Rendering basic content
       if(this.state.content == 'basic'){
         postContent =
-          <div className="postContent">
+          <div className="postContent" onScroll={this.handleScroll}>
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -185,7 +190,7 @@ class StopContent extends Component{
       // 2) Rendering extended content
       } else if (this.state.content == 'extended'){
         postContent =
-          <div className="postContent">
+          <div className="postContent" onScroll={this.handleScroll}>
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/${currentData.img_title}`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -245,7 +250,7 @@ class StopContent extends Component{
           }
         }
         postContent =
-          <div className="postContent">
+          <div className="postContent" onScroll={this.handleScroll}>
             <h1>{currentData.question}</h1>
             {answers[0]}<br/>
             {answers[1]}<br/>
@@ -311,6 +316,9 @@ class PageContent extends Component {
       this.setState({center: [position.coords.latitude,position.coords.longitude]});
     }
 
+    // Transmetting userLocation to global app as state
+    self.props.setUserLocation([position.coords.latitude,position.coords.longitude], position.coords.accuracy);
+    console.log([position.coords.latitude,position.coords.longitude]);
 
     // Check for each stop feature if the distance is smaller than 150m to render spot content
     stops.features.forEach(function(stop){
@@ -357,12 +365,14 @@ class PageContent extends Component {
   handlePan = (e) => {
     this.setState({center: e.target.getCenter()});
     this.setState({followingLocation : false});
+    this.props.trackInteraction(e.target.getCenter(),'pan','panning map')
   }
 
   // Updating zoom state as zoomed
   handleZoom = (e) => {
     this.setState({zoom: e.target.getZoom()});
     this.setState({followingLocation : false});
+    this.props.trackInteraction(e.target.getZoom(),'pan','zooming map')
   }
 
   // Focus on current location
@@ -370,17 +380,7 @@ class PageContent extends Component {
     this.setState({center : this.state.location});
     this.setState({zoom : 16});
     this.setState({followingLocation : true});
-  }
-
-  // Keep records of the user's interaction into firebase
-  trackInteraction = (indicator,interaction,data,stop) => {
-    database.ref('/interactions').push({
-      username : this.props.username,
-      indicator : indicator,
-      interaction : interaction,
-      data : data,
-      stop : stop
-    })
+    this.props.trackInteraction('NA','click','center map')
   }
 
   // When the page is loaded, get user location
@@ -402,119 +402,128 @@ class PageContent extends Component {
 
   // Defining which page to render into PageContent Component
   render(){
-    localStorage.setItem('currentPage',this.props.content)
-    // Storing handleClick props into a variable for use into callback functions
-    var self = this;
-    // -------------------------------------------------- //
-    // Rendering Welcome page
-    if(this.props.content == 'Bienvenue'){
+    // Avoir bug when loading stop content without any post value
+    // In this case return to welcome page
+    if(this.props.content == 'StopContent' && this.props.stop==null){
+      localStorage.setItem('currentPage','Bienvenue')
       return(
         <Welcome/>
       )
-    // -------------------------------------------------- //
-    // Rendering Map page
-    } else if (this.props.content == 'Carte'){
-
-    var mapstyle = {
-      height : `${(window.innerHeight-150)}px`
-    }
-    // trackComplete variable for storing track with correct coordinates
-    var trackComplete = [];
-    // Reversing latlng coordinates
-    track.features.forEach(function(segment){
-      if(mapShown == false){
-        // forEach feature, reverse each point coordinates
-        segment.geometry.coordinates.forEach(function(point){
-          point.reverse();
-        })
-      }
-      // Add reversed coordinates into trackComplete variable
-      trackComplete.push(segment.geometry.coordinates);
-    });
-
-    return(
-        <div ref='mymap'>
-          {/* Map with initial parameters */}
-          <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom} minZoom={13} maxZoom={20} maxBounds={[[46.47,6.53],[46.58,6.71]]}style={mapstyle}
-            // Handling changed on focus when interacting with the map
-            onDragend={this.handlePan} onZoomend={this.handleZoom}
-            updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-            />
-            {/* Polyline for track */}
-            <Polyline color="red" positions={trackComplete}/>
-            {/* Loop for adding every marker according to its and position */}
-            {stops.features.map(function(stop){
-              var id = stop.properties.id
-              var coords = stop.geometry.coordinates
-              if(mapShown == false){
-                coords.reverse();
-              }
-              return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={self.props.handleClick}/>
-            })}
-            <Marker icon={locationIcon} position={this.state.location}/>
-            <Circle center={this.state.location} radius={this.state.locationAccuracy}/>
-            <Control position='topright'>
-              <button onClick={this.focusLocation}>Centrer</button>
-            </Control>
-          </Map>
-          {mapShown = true}
-        </div>
-    )
-
-  // -------------------------------------------------- //
-  // Rendering Stops page
-  } else if (this.props.content == 'Postes'){
-      return(
-        // onClick props only has parameters when Geoguide-currentPage = Postes
-        <Stops onClick = {this.props.onClick}/>
-      )
-    // -------------------------------------------------- //
-    // Rendering StopContent page
-    } else if(this.props.content == 'StopContent'){
-      return(
-        <StopContent
-          // Passing user information
-          userid = {this.props.userid}
-          // Passing methods about changing pages and rendering
-          showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
-          // Passing tarckingLog method
-          trackInteraction={this.trackInteraction}
-        />
-      )
-    // -------------------------------------------------- //
-    // Rendering Questionnary page
-    } else if(this.props.content == 'Questionnaire'){
-      return (
-        <Questionnary userid={this.state.userid} updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}/>
-      )
-    // -------------------------------------------------- //
-    // Rendering Score page
-    } else if(this.props.content == 'Score'){
-      return (
-        <Score/>
-      )
-    // -------------------------------------------------- //
-    // Rendering Themes page
-    } else if(this.props.content == 'Themes'){
-      return(
-        <Themes/>
-      )
-    // -------------------------------------------------- //
-    // Rendering Others page
-    } else if(this.props.content == 'Autres'){
-      return(
-        <Others/>
-      )
     } else {
+      localStorage.setItem('currentPage',this.props.content)
+      // Storing handleClick props into a variable for use into callback functions
+      var self = this;
+      // -------------------------------------------------- //
+      // Rendering Welcome page
+      if(this.props.content == 'Bienvenue'){
+        return(
+          <Welcome showMap={this.props.showMap}/>
+        )
+      // -------------------------------------------------- //
+      // Rendering Map page
+      } else if (this.props.content == 'Carte'){
+
+      var mapstyle = {
+        height : `${(window.innerHeight-150)}px`
+      }
+      // trackComplete variable for storing track with correct coordinates
+      var trackComplete = [];
+      // Reversing latlng coordinates
+      track.features.forEach(function(segment){
+        if(mapShown == false){
+          // forEach feature, reverse each point coordinates
+          segment.geometry.coordinates.forEach(function(point){
+            point.reverse();
+          })
+        }
+        // Add reversed coordinates into trackComplete variable
+        trackComplete.push(segment.geometry.coordinates);
+      });
+
       return(
-        <div>
-          <h1>Oups, on dirait qu'il y a une erreur...</h1>
-          <p>Si ce message subsiste, fermez votre navigateur et relancez votre navigateur pour rertourner sur le Géoguide.</p>
-        </div>
+          <div ref='mymap'>
+            {/* Map with initial parameters */}
+            <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom} minZoom={13} maxZoom={20} maxBounds={[[46.47,6.53],[46.58,6.71]]}style={mapstyle}
+              // Handling changed on focus when interacting with the map
+              onDragend={this.handlePan} onZoomend={this.handleZoom}
+              updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              />
+              {/* Polyline for track */}
+              <Polyline color="red" positions={trackComplete}/>
+              {/* Loop for adding every marker according to its and position */}
+              {stops.features.map(function(stop){
+                var id = stop.properties.id
+                var coords = stop.geometry.coordinates
+                if(mapShown == false){
+                  coords.reverse();
+                }
+                return <Marker key={id} icon={myIcons[id-1]} value={id} position={coords} onClick={self.props.handleClick}/>
+              })}
+              <Marker icon={locationIcon} position={this.state.location}/>
+              <Circle center={this.state.location} radius={this.state.locationAccuracy}/>
+              <Control position='topright'>
+                <button onClick={this.focusLocation}>Centrer</button>
+              </Control>
+            </Map>
+            {mapShown = true}
+          </div>
       )
+
+    // -------------------------------------------------- //
+    // Rendering Stops page
+    } else if (this.props.content == 'Postes'){
+        return(
+          // onClick props only has parameters when Geoguide-currentPage = Postes
+          <Stops onClick = {this.props.onClick}/>
+        )
+      // -------------------------------------------------- //
+      // Rendering StopContent page
+      } else if(this.props.content == 'StopContent'){
+        return(
+          <StopContent
+            // Passing user information
+            userid = {this.props.userid}
+            // Passing methods about changing pages and rendering
+            showMap = {this.props.showMap} stop={this.props.stop} renderNavbar={this.props.renderNavbar}
+            // Passing tarckingLog method
+            trackInteraction={this.props.trackInteraction}
+          />
+        )
+      // -------------------------------------------------- //
+      // Rendering Questionnary page
+      } else if(this.props.content == 'Questionnaire'){
+        return (
+          <Questionnary userid={this.state.userid} updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}/>
+        )
+      // -------------------------------------------------- //
+      // Rendering Score page
+      } else if(this.props.content == 'Score'){
+        return (
+          <Score/>
+        )
+      // -------------------------------------------------- //
+      // Rendering Themes page
+      } else if(this.props.content == 'Themes'){
+        return(
+          <Themes/>
+        )
+      // -------------------------------------------------- //
+      // Rendering Others page
+      } else if(this.props.content == 'Autres'){
+        return(
+          <Others/>
+        )
+      } else {
+        return(
+          <div>
+            <h1>Oups, on dirait qu'il y a une erreur...</h1>
+            <p>Si ce message subsiste, fermez votre navigateur et relancez votre navigateur pour rertourner sur le Géoguide.</p>
+          </div>
+        )
+      }
     }
   }
 }
@@ -532,7 +541,8 @@ class Geoguide extends Component {
       // Set username and userid state from the data stored in localStorage
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
-
+      userLocation : [0,0],
+      userLocationAccuracy : 0,
       // userLogged : true,
       // username : '1234',
       // userid : '-LFwqhkJbSc9luHRlK73',
@@ -543,7 +553,6 @@ class Geoguide extends Component {
       currentPage : localStorage.getItem('currentPage'),
       currentStop : null,
       renderNavbar : true,
-      width : window.innerWidth
     }
   }
 
@@ -589,14 +598,9 @@ class Geoguide extends Component {
       indicatorExists = snap.child(this.state.userid).val()[indicator];
     }).then(() => {
       if(indicatorExists == 'undefined'){
-        // console.log('questionnaire');
         this.setState({'currentPage' : 'Questionnaire','renderNavbar':false})
       } else {
-        if(indicator == 'firstlog'){
-          this.setState({'currentPage' : 'Bienvenue'})
-        } else {
-          this.setState({'currentPage' : 'Carte','renderNavbar':true,'mapShown' : true})
-        }
+        this.setState({'currentPage' : 'Carte','renderNavbar':true,'mapShown' : true})
       }
     })
   }
@@ -615,8 +619,12 @@ class Geoguide extends Component {
     // Get value of the corresponding indicator
     var nextIndicator = indicatorsList[nextIndex]
     // If next value is finished, go back to map
-    if(nextIndicator == 'finished'){
-      self.setState({'currentPage' : 'Carte','renderNavbar':true})
+    if(nextIndicator == 'finished' || nextIndicator == 'firstlog'){
+      if(nextIndicator == 'finished'){
+        self.setState({'currentPage' : 'Carte','renderNavbar':true})
+      } else {
+        self.setState({'currentPage' : 'Bienvenue','renderNavbar':true})
+      }
       nextQuestionStop++;
       getIndicatorsList(nextQuestionStop)
       self.setNexIndicator(indicatorsList[0])
@@ -648,6 +656,10 @@ class Geoguide extends Component {
     })
   }
 
+  setUserLocation = (location, accuracy) => {
+    this.setState({userLocation : location, userLocationAccuracy : accuracy})
+  }
+
   // Setting up array to be saved into localStorage for indicator i22 and i33
   getArrayValues = (indicator) => {
     var firebaseArray = '';
@@ -658,15 +670,22 @@ class Geoguide extends Component {
     })
   }
 
+  // reload = () => {
+  //   this.setState({currentPage : 'Bienvenue'})
+  //   this.setState({currentStop : null})
+  // }
+
   // Methods handling page changes and rendering
   showMap = () => {
     this.setState({currentPage : 'Carte'})
     this.setState({currentStop : null})
+    this.props.trackInteraction('Carte','click','render map')
   }
 
   changePage = (e) => {
     this.setState({currentPage : e.target.innerHTML})
     this.setState({currentStop : null})
+    this.trackInteraction(e.target.innerHTML,'click','change page')
   }
 
   // Handling rendering for navbar
@@ -688,6 +707,7 @@ class Geoguide extends Component {
       this.setState({currentStop : e.target.options.value})
       this.setState({currentPage : 'StopContent'})
     }
+    this.trackInteraction(markerStop,'click','clicked marker')
   }
 
   showSpotContent = (e) => {
@@ -704,7 +724,32 @@ class Geoguide extends Component {
         this.setState({currentStop : e})
         this.setState({currentPage : 'StopContent'})
       }
+      this.trackInteraction(this.state.currentStop,'click','access stop content')
     }
+
+  handleScroll = () => {
+    this.trackInteraction(this.state.currentStop,'scroll','access stop content')
+  }
+
+  // Keep records of the user's interaction into firebase
+  trackInteraction = (value,interaction,data) => {
+    database.ref('/interactions').push({
+      username : this.state.username,
+      value : value,
+      interaction : interaction,
+      data : data,
+      location : this.state.userLocation,
+      locationAccuracy : this.state.userLocationAccuracy,
+      time : Date(),
+      windowSize : [window.innerHeight,window.innerWidth]
+    })
+  }
+
+  componentDidMount = () => {
+    document.addEventListener('scroll',function(e){
+      console.log(e);
+    })
+  }
 
   render() {
     // console.log(this.state.userid);
@@ -720,18 +765,18 @@ class Geoguide extends Component {
     // If user data is found into localStorage
     if(this.state.userLogged){
       return(
-        <div className="App">
+        <div className="App" onScrollBeginDrag={function(){console.log('scrolled');}}>
           <header>Géoguide Lausanne</header>
           <p className="username">Connecté en tant que {this.state.username}</p>
           <PageContent
             // Passing information about user
             userid={this.state.userid} username={this.state.username}
             // Passing methods on handling interaction between user data and database
-            updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator} checkUserData={this.checkUserData}
+            updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator} checkUserData={this.checkUserData} setUserLocation={this.setUserLocation}
             // Pasing methods about changing pages and rendering
-            showMap = {this.showMap} content = {this.state.currentPage} onClick = {this.showSpotContent} renderNavbar = {this.renderNavbar}
+            showMap={this.showMap} content={this.state.currentPage} onClick={this.showSpotContent}renderNavbar ={this.renderNavbar} reload={this.reload}
             // Passing methods about map
-            handleClick={this.handleMarkerClick} stop = {this.state.currentStop} onStopReached = {this.showSpotContent}
+            handleClick={this.handleMarkerClick} stop={this.state.currentStop} onStopReached={this.showSpotContent} trackInteraction={this.trackInteraction}
           />
           {/* Navbar component showing only if page is not a quiz */}
           {navbar}
@@ -742,7 +787,7 @@ class Geoguide extends Component {
       return (
         <div>
           <header>Géoguide Lausanne</header>
-          <Login onClick={this.login}/>
+          <Login trackInteraction={this.trackInteraction} onClick={this.login}/>
         </div>
       )
     }

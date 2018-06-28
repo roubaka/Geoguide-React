@@ -21,6 +21,7 @@ class Welcome extends Component {
           <br/>
           Pour commencer allez sur la carte et rendez vous au départ de la marche start icon. Une fois sur place, suivez le chemin (ligne rouge) à la recherche d'un poste. Vous verrez, il se manifeste tout seul!
         </p>
+        <button onClick={this.props.showMap}>Commencer le parcours</button>
       </div>
     )
   }

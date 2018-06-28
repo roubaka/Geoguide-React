@@ -21,12 +21,11 @@ class Navbar extends Component {
     super(props);
   }
 
-
-
   render() {
     var tableStyle = {
       width:window.innerHeight/4+'px'
     }
+
     var navbarItem = optionsArray.map(function(item, i){
        return <td key = {i} colSpan={1} value = {options[item].name}>{options[item].title}</td>;
     })
