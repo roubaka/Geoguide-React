@@ -8,11 +8,6 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-#map {
-  height: 400px;
-  align: center;
-}
-
 /*html { background-color: #333; }
         @media only screen {
             .ui-page {
@@ -116,14 +111,14 @@ input.qu_btn {
   display:none;
 }
 
-#map .ui-content {
+/* #map .ui-content {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     padding: 0 !important;
-}
+} */
 
 #mapdiv {
     width: 100%;

@@ -7,7 +7,8 @@ stops.features.forEach(function(stop){
   var id = stop.properties.id
   var icon = new L.Icon({
     iconUrl : require(`./../icons/picon_${id}.png`),
-    iconSize : [25,35]
+    iconSize : [30,40],
+    iconAnchor: [15,35]
   })
   myIcons.push(icon);
 })

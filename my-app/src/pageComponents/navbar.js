@@ -30,7 +30,7 @@ class Navbar extends Component {
     //   return <li key = {i}> {item.title} </li>;
     // })
     return(
-        <table>
+        <table className="navbar">
           <tbody>
             <tr onClick = {this.props.onClick} className = 'footer'>
               {navbarItem}

@@ -127,7 +127,7 @@ class Login extends Component {
     if(this.state.focusedInput && this.state.username != null){
       if (this.state.validName == true){
         // show username as valid
-        validation = <p>Ce nom d'utilisateur est disponible</p>
+        validation = <p className="login">Ce nom d'utilisateur est disponible</p>
       } else {
         // show username as invalid
         validation = <p className="login">Ce nom d'utilisateur existe déjà,<br />êtes vous sûr que c'est bien vous?</p>
@@ -137,9 +137,10 @@ class Login extends Component {
 
     return (
       <div>
-        <h1>Bienvenue dans le Géoguide Lausanne</h1>
+        <h1 className="login">Bienvenue dans le Géoguide Lausanne</h1>
         <p className="login">Avant de commencer, veuillez vous connecter avec votre nom d'utilisateur</p>
         <input className="login" type="text" required = "true" defaultValue = "Entrez votre nom"
+          style = {inputStyling}
           onChange = {this.handleChange} onFocus = {this.handleFocus}>
         </input>
         <button onClick = {this.handleClick}>

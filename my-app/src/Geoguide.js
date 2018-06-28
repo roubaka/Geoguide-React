@@ -149,7 +149,6 @@ class StopContent extends Component{
 
     // storing id stop in currentData
     var currentData = stopsData[this.props.stop - arrayDecay]
-    // console.log(currentData[this.props.stop].img_swip1)
     var postContent;
 
     // Complementary images for extended content, based on swip in original version
@@ -247,6 +246,7 @@ class StopContent extends Component{
         }
         postContent =
           <div>
+            <h1>{currentData.question}</h1>
             {answers[0]}<br/>
             {answers[1]}<br/>
             {answers[2]}<br/>
@@ -311,7 +311,7 @@ class PageContent extends Component {
       this.setState({center: [position.coords.latitude,position.coords.longitude]});
     }
 
-    /*
+
     // Check for each stop feature if the distance is smaller than 150m to render spot content
     stops.features.forEach(function(stop){
       // Store coordinates of each points as variable S
@@ -320,7 +320,7 @@ class PageContent extends Component {
       var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
         // If distance, trigger showSpotContent function
         // NB default parameter for distance is 0.0002
-        if (!localStorage.getItem(('stop'+stop.properties.id) && d < 0.0002)){
+        if(localStorage.getItem(('stop'+stop.properties.id))!='visited' && d < 0.0002){
           // On first visit of the stop, add stop number into local storage
           localStorage.setItem('stop'+stop.properties.id,'visited')
           // Triger function handling
@@ -343,7 +343,6 @@ class PageContent extends Component {
           }
         }
     })
-    */
   }
 
   // Location error handling
@@ -416,6 +415,9 @@ class PageContent extends Component {
     // Rendering Map page
     } else if (this.props.content == 'Carte'){
 
+    var mapstyle = {
+      height : `${(window.innerHeight-120)}px`
+    }
     // trackComplete variable for storing track with correct coordinates
     var trackComplete = [];
     // Reversing latlng coordinates
@@ -433,7 +435,7 @@ class PageContent extends Component {
     return(
         <div ref='mymap'>
           {/* Map with initial parameters */}
-          <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom}
+          <Map id='map' ref='map' center={this.state.center} zoom={this.state.zoom} minZoom={13} maxZoom={20} maxBounds={[[46.47,6.53],[46.58,6.71]]}style={mapstyle}
             // Handling changed on focus when interacting with the map
             onDragend={this.handlePan} onZoomend={this.handleZoom}
             updateUserData={this.props.updateUserData} nextIndicator={this.props.nextIndicator}>
@@ -531,10 +533,10 @@ class Geoguide extends Component {
       username : localStorage.getItem('username'),
       userid : localStorage.getItem('userid'),
 
+      // userLogged : true,
+      // username : '1234',
+      // userid : '-LFwqhkJbSc9luHRlK73',
 
-      userLogged : true,
-      username : '1234',
-      userid : '-LFwqhkJbSc9luHRlK73',
       // Saving data on next indicator
       nextIndicator : '',
       // States about page content and rendering
@@ -738,7 +740,10 @@ class Geoguide extends Component {
     // If no user data is found into localStorage
     } else {
       return (
-        <Login onClick={this.login}/>
+        <div>
+          <header>Géoguide Lausanne</header>
+          <Login onClick={this.login}/>
+        </div>
       )
     }
   }

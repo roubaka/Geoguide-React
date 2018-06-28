@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,500,500i,600,600i');
 
 body {
-  width: 100%;
+  width: auto;
   padding: 0px;
+  top: 0px;
+  left: 0px;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
 header{
+  position: fixed;
+  top : 10px;
   height: 30px;
   width: 100%;
   padding: 10px 0px 0px 0px;
@@ -14,6 +18,7 @@ header{
   background-color: orange;
   text-align: center;
   vertical-align: middle;
+  z-index: 10;
 }
 
 p.login{
@@ -27,24 +32,36 @@ input.login{
 }
 
 h1{
+  width: auto;
+  position: relative;
+  /* margin-top: 5px; */
+  padding: 10px;
   font-size: 20px;
   text-align: center;
 }
 
+h1.login{
+  margin-top: 80px;
+}
+
 p.username{
-  width: 100%;
+  width: auto;
   text-align: center;
   margin: 0px 0px 0px 0px;
   /* padding: -10px 0px -10px 0px; */
 }
 
 img{
-  align:center;
+  width: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 p{
   font-size: 14px;
   text-align: justify;
+  widows: 95%;
 }
 
 button {
@@ -54,10 +71,11 @@ button {
   background-color: #E6E6E6;
   vertical-align: center;
   width:100%;
-  height: 30px;
+  height: auto;
   border: 0.5px;
   border-radius: 5px;
   margin: 2px;
+  padding: 5px 5px 5px 5px;
 }
 
 li{
@@ -72,6 +90,11 @@ li{
   padding: 10px 10px 10px 10px;
 }
 
+.navbar {
+  position: fixed;
+  bottom : 0px;
+}
+
 .App{
   align: center;
 }
@@ -79,7 +102,6 @@ li{
 .imgLegend{
   font-style: italic;
 }
-
 
 .footer {
     width: 100%;
@@ -90,7 +112,8 @@ li{
 }
 
 #map{
-  margin: 0px -10px 0px -10px;
-  padding: -10px;
-  max-height: 80%;
+  height: 90%;
+  position: relative;
+  margin: 15px -10px 0px -10px;
+  padding: 10px;
 }
