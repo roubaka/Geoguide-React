@@ -21,9 +21,14 @@ class Navbar extends Component {
     super(props);
   }
 
+
+
   render() {
+    var tableStyle = {
+      width:window.innerHeight/4+'px'
+    }
     var navbarItem = optionsArray.map(function(item, i){
-       return <td key = {i} value = {options[item].name}>{options[item].title}</td>;
+       return <td key = {i} colSpan={1} value = {options[item].name}>{options[item].title}</td>;
     })
     // Array version for mapping through the options
     // var navbarItem = options.map(function(item, i){
@@ -32,7 +37,7 @@ class Navbar extends Component {
     return(
         <table className="navbar">
           <tbody>
-            <tr onClick = {this.props.onClick} className = 'footer'>
+            <tr colSpan={4} onClick = {this.props.onClick}>
               {navbarItem}
             </tr>
           </tbody>

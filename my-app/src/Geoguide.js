@@ -173,7 +173,7 @@ class StopContent extends Component{
       // 1) Rendering basic content
       if(this.state.content == 'basic'){
         postContent =
-          <div>
+          <div className="postContent">
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -185,7 +185,7 @@ class StopContent extends Component{
       // 2) Rendering extended content
       } else if (this.state.content == 'extended'){
         postContent =
-          <div>
+          <div className="postContent">
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/${currentData.img_title}`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -228,7 +228,7 @@ class StopContent extends Component{
             } else {
               answerStyle = wrongAnser;
             }
-          } else if(this.state.shuffledOnce) {
+          } else if(this.state.shuffledOnce == false) {
             // If the user hasn't answered quiz, shuffle the answers
             this.shuffleAnswers(answers);
           }
@@ -245,7 +245,7 @@ class StopContent extends Component{
           }
         }
         postContent =
-          <div>
+          <div className="postContent">
             <h1>{currentData.question}</h1>
             {answers[0]}<br/>
             {answers[1]}<br/>
@@ -416,7 +416,7 @@ class PageContent extends Component {
     } else if (this.props.content == 'Carte'){
 
     var mapstyle = {
-      height : `${(window.innerHeight-120)}px`
+      height : `${(window.innerHeight-150)}px`
     }
     // trackComplete variable for storing track with correct coordinates
     var trackComplete = [];

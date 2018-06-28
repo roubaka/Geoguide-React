@@ -10,11 +10,12 @@ body {
 
 header{
   position: fixed;
-  top : 10px;
+  top : 0px;
+  left: 0px;
   height: 30px;
   width: 100%;
-  padding: 10px 0px 0px 0px;
-  margin: -10px -10px 0px -10px;
+  padding: 10px 10px 0px 0px;
+  /* margin: -10px 0px 0px 0px; */
   background-color: orange;
   text-align: center;
   vertical-align: middle;
@@ -35,7 +36,7 @@ h1{
   width: auto;
   position: relative;
   /* margin-top: 5px; */
-  padding: 10px;
+  padding: 0px;
   font-size: 20px;
   text-align: center;
 }
@@ -47,8 +48,8 @@ h1.login{
 p.username{
   width: auto;
   text-align: center;
-  margin: 0px 0px 0px 0px;
-  /* padding: -10px 0px -10px 0px; */
+  margin: 30px 0px 0px 0px;
+  padding: 20px 0px 5px 0px;
 }
 
 img{
@@ -59,9 +60,10 @@ img{
 }
 
 p{
+  padding: 0px 5px 0px 5px;
   font-size: 14px;
   text-align: justify;
-  widows: 95%;
+  width: 95%;
 }
 
 button {
@@ -78,6 +80,14 @@ button {
   padding: 5px 5px 5px 5px;
 }
 
+ul{
+  display: block;
+  /* position: relative; */
+  /* padding-top: 10px; */
+  padding-bottom: 10px;
+  margin: 10px 0px 30px 0px;
+}
+
 li{
   list-style-type : none;
   font-size: 18px;
@@ -88,11 +98,37 @@ li{
   border-radius: 5px;
   margin: 5px 10px 0px -30px;
   padding: 10px 10px 10px 10px;
+  vertical-align: center;
 }
 
+div.postContent{
+  padding-bottom: 30px;
+/* margin-bottom: 20px; */
+}
+
+table, tbody{
+  width: 100%;
+  vertical-align:middle;
+}
+
+tr, td{
+  vertical-align: middle;
+  text-align: center;
+  padding: 5px 0px 5px 0px;
+  }
+
 .navbar {
+  z-index: 10;
+  height: 25px;
+  width: 100%;
+  left: 0px;
+  padding: 0px 10px 0px 0px;
+  background-color: orange;
   position: fixed;
+  text-align: center;
+  vertical-align: middle;
   bottom : 0px;
+  margin: 0px 0px 0px 0px;
 }
 
 .App{
@@ -103,17 +139,21 @@ li{
   font-style: italic;
 }
 
-.footer {
+.pageContent{
+  margin: 0px 0px 10px 0px;
+}
+
+/* .footer {
     width: 100%;
     position: relative;
     left: 0;
-    bottom: 100%;
+    bottom: 100%; */
     /* height: 50px; */
-}
+/* } */
 
 #map{
   height: 90%;
   position: relative;
-  margin: 15px -10px 0px -10px;
+  margin: 5px -10px 0px -10px;
   padding: 10px;
 }
