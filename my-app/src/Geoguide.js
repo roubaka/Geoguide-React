@@ -190,7 +190,7 @@ class StopContent extends Component{
       // 1) Rendering basic content
       if(this.state.content == 'basic'){
         postContent =
-          <div className="postContent" onScroll={this.handleScroll}>
+          <div className="postContent">
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/poste_${this.props.stop}.jpg`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -202,7 +202,7 @@ class StopContent extends Component{
       // 2) Rendering extended content
       } else if (this.state.content == 'extended'){
         postContent =
-          <div className="postContent" onScroll={this.handleScroll}>
+          <div className="postContent">
             <h1>{currentData.title}</h1>
             <img src = {require(`./img/${currentData.img_title}`)} width = {'auto'} height = {'auto'}/>
             <p>{currentData.text1_p1}</p>
@@ -756,14 +756,14 @@ class Geoguide extends Component {
 
   componentDidMount = () => {
     // Adding eventListener for scrolling
-    var scroll;
-    var self = this;
-
-    window.addEventListener('scroll',function(e){
-      scroll = e.path[1].scrollY;
-      self.trackInteraction(scroll,'scroll','scrolling page')
-    })
-    // Checking if the page has username data
+    // var scroll;
+    // var self = this;
+    //
+    // window.addEventListener('scroll',function(e){
+    //   scroll = e.path[1].scrollY;
+    //   self.trackInteraction(scroll,'scroll','scrolling page')
+    // })
+    // // Checking if the page has username data
     if(localStorage.getItem('username') == 'null'){
       this.setState({userLogged : false})
     }
@@ -783,7 +783,7 @@ class Geoguide extends Component {
     // If user data is found into localStorage
     if(this.state.userLogged){
       return(
-        <div className="App" onScrollBeginDrag={function(){console.log('scrolled');}}>
+        <div className="App">
           <header>Géoguide Lausanne</header>
           <p className="username">Connecté en tant que {this.state.username}</p>
           <PageContent
