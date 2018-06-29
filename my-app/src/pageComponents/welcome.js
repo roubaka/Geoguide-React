@@ -12,7 +12,7 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 class Welcome extends Component {
   render(){
     return(
-      <div>
+      <div className="PageContent">
         <h1>Partez à la (re)découverte de Lausanne avec votre GéoGuide!</h1>
         <p>
           La Faculté des géosciences et de l'environnement de l'Université de Lausanne partage ses sujets de recherche et vous propose de découvrir la ville sous un nouveau regard: Les quartiers changent et se développent, les rivières disparues refont surface, le glacier du Rhône fait pousser des bananes, les toits de Lausanne se trouvent dans l'eau du Léman...

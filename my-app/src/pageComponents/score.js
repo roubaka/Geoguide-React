@@ -12,7 +12,10 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 class Score extends Component{
   render(){
     return(
-      <div>This is de Score page, hell yeah!</div>
+      <div className="PageContent">
+        <h1>Score</h1>
+        <p>Dans la version finale du Géoguide il y aura plusieurs informations sur les postes visités et sur le taux de réussite aux quiz. On se réjouit!</p>
+      </div>
     )
   }
 }

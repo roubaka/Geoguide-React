@@ -93,7 +93,7 @@ class StopContent extends Component{
       // currentStop : null
       content : 'basic',
       answeredQuiz : false,
-      shuffledOnce : false,
+      quizArray : []
     }
   }
 
@@ -113,7 +113,9 @@ class StopContent extends Component{
   // Method showing quiz content
   quizContent = () => {
     this.setState({content:'quiz'})
-    this.props.renderNavbar(false)
+    if(this.state.answeredQuiz == false){
+      this.props.renderNavbar(false)
+    }
   }
 
   // Method handling answering of the quiz
@@ -134,18 +136,28 @@ class StopContent extends Component{
     }
   }
 
-  handleScroll = (e) => {
-    console.log(e);
-  }
-
   // Shuffling the answers of the quiz
   shuffleAnswers = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
-    this.setState({shuffledOnce : true})
     return array;
+  }
+
+  componentDidMount = () => {
+    // Setting array to shuffle the answers
+    var array = [0,1,2,3]
+    array = this.shuffleAnswers(array);
+    this.setState({quizArray : array})
+    console.log('fzfhg');
+    // Cecking localStorage to know if user has already answered this post questions
+    // json parse to get the array located
+    // If value is different from 0 (equals true or false) it means user has already answered the question, hence change state
+    if(JSON.parse(localStorage.getItem('i33'))[this.props.stop-6] != 0){
+      console.log("state");
+      this.setState({answeredQuiz : true})
+    }
   }
 
   render(){
@@ -233,9 +245,6 @@ class StopContent extends Component{
             } else {
               answerStyle = wrongAnser;
             }
-          } else if(this.state.shuffledOnce == false) {
-            // If the user hasn't answered quiz, shuffle the answers
-            this.shuffleAnswers(answers);
           }
           // In any case, render td + button
           var answerTag =
@@ -249,16 +258,20 @@ class StopContent extends Component{
             backToMap = <button onClick = {this.props.showMap}>Je continue mon chemin!</button>
           }
         }
+
+        var shuffledArray = this.state.quizArray;
+
         postContent =
-          <div className="postContent" onScroll={this.handleScroll}>
+          <div className="postContent">
             <h1>{currentData.question}</h1>
-            {answers[0]}<br/>
-            {answers[1]}<br/>
-            {answers[2]}<br/>
-            {answers[3]}<br/>
+            {answers[shuffledArray[0]]}<br/>
+            {answers[shuffledArray[1]]}<br/>
+            {answers[shuffledArray[2]]}<br/>
+            {answers[shuffledArray[3]]}<br/>
             {backToMap}
           </div>
       }
+
       return(postContent);
   }
 }
@@ -380,7 +393,7 @@ class PageContent extends Component {
     this.setState({center : this.state.location});
     this.setState({zoom : 16});
     this.setState({followingLocation : true});
-    this.props.trackInteraction('NA','click','center map')
+    this.props.trackInteraction(this.state.location,'click','center map')
   }
 
   // When the page is loaded, get user location
@@ -407,7 +420,7 @@ class PageContent extends Component {
     if(this.props.content == 'StopContent' && this.props.stop==null){
       localStorage.setItem('currentPage','Bienvenue')
       return(
-        <Welcome/>
+        <Welcome showMap={this.props.showMap} trackInteraction={this.props.track}/>
       )
     } else {
       localStorage.setItem('currentPage',this.props.content)
@@ -417,7 +430,7 @@ class PageContent extends Component {
       // Rendering Welcome page
       if(this.props.content == 'Bienvenue'){
         return(
-          <Welcome showMap={this.props.showMap}/>
+          <Welcome showMap={this.props.showMap} trackInteraction={this.props.track}/>
         )
       // -------------------------------------------------- //
       // Rendering Map page
@@ -679,7 +692,7 @@ class Geoguide extends Component {
   showMap = () => {
     this.setState({currentPage : 'Carte'})
     this.setState({currentStop : null})
-    this.props.trackInteraction('Carte','click','render map')
+    this.trackInteraction('Carte','click','render map')
   }
 
   changePage = (e) => {
@@ -711,24 +724,20 @@ class Geoguide extends Component {
   }
 
   showSpotContent = (e) => {
-      // showSpotContent triggered when stop in list is clicked and stop is reached
-      if(isNaN(e)){
-        // If parameter e isNaN, > get value of e.target
-        console.log(e.target.value);
-        this.setState({currentStop: e.target.value})
-        this.setState({currentPage : 'StopContent'})
-      } else {
-        // Else, stop was reached > get e
-        // NB set to e-14 for test with geolocation arriving on fake last post
-        // this.setState({currentStop : e-14})
-        this.setState({currentStop : e})
-        this.setState({currentPage : 'StopContent'})
-      }
-      this.trackInteraction(this.state.currentStop,'click','access stop content')
+    // showSpotContent triggered when stop in list is clicked and stop is reached
+    if(isNaN(e)){
+      // If parameter e isNaN, > get value of e.target
+      console.log(e.target.value);
+      this.setState({currentStop: e.target.value})
+      this.setState({currentPage : 'StopContent'})
+    } else {
+      // Else, stop was reached > get e
+      // NB set to e-14 for test with geolocation arriving on fake last post
+      // this.setState({currentStop : e-14})
+      this.setState({currentStop : e})
+      this.setState({currentPage : 'StopContent'})
     }
-
-  handleScroll = () => {
-    this.trackInteraction(this.state.currentStop,'scroll','access stop content')
+    this.trackInteraction(this.state.currentStop,'click','access stop content')
   }
 
   // Keep records of the user's interaction into firebase
@@ -746,9 +755,18 @@ class Geoguide extends Component {
   }
 
   componentDidMount = () => {
-    document.addEventListener('scroll',function(e){
-      console.log(e);
+    // Adding eventListener for scrolling
+    var scroll;
+    var self = this;
+
+    window.addEventListener('scroll',function(e){
+      scroll = e.path[1].scrollY;
+      self.trackInteraction(scroll,'scroll','scrolling page')
     })
+    // Checking if the page has username data
+    if(localStorage.getItem('username') == 'null'){
+      this.setState({userLogged : false})
+    }
   }
 
   render() {
@@ -785,7 +803,7 @@ class Geoguide extends Component {
     // If no user data is found into localStorage
     } else {
       return (
-        <div>
+        <div className="App">
           <header>Géoguide Lausanne</header>
           <Login trackInteraction={this.trackInteraction} onClick={this.login}/>
         </div>
