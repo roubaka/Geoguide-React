@@ -80,6 +80,10 @@ button {
   padding: 5px 10px 10px 10px;
 }
 
+input.range{
+  width: 80%
+}
+
 ul{
   display: block;
   /* position: relative; */
