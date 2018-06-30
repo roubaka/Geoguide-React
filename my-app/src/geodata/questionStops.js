@@ -9,7 +9,7 @@ var questionStops = {
   { "type": "Feature", "properties": { "id": 4, "indicator": "i42,i43,i44,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.632251232647282, 46.521215204975626 ] } },
   { "type": "Feature", "properties": { "id": 5, "indicator": "i17,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.631438460784457, 46.520993960040578 ] } },
   { "type": "Feature", "properties": { "id": 6, "indicator": "i18,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.628254360025148, 46.520001419592603 ] } },
-  { "type": "Feature", "properties": { "id": 7, "indicator": "i21,i24,i321,i322,i323,i325,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.626454650900319, 46.519184019726957 ] } }
+  { "type": "Feature", "properties": { "id": 7, "indicator": "i21,i24,finished" }, "geometry": { "type": "Point", "coordinates": [ 6.626454650900319, 46.519184019726957 ] } }
   ]
 }
 
