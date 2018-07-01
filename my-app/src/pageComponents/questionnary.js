@@ -88,6 +88,11 @@ class Questionnary extends Component {
       </div>
     }
 
+    var buttonStyle = {
+      border:"none",
+      outline:"none"
+    }
+
     // Iterating through values - maximum 5 options
     for (var i = 1; i < 6; i++){
       // Related indicator to be set
@@ -101,7 +106,7 @@ class Questionnary extends Component {
         // Rendering buttons
         if(nextOne.type == 'unique'){
           options.push(
-            <button key = {i} onClick = {function(){
+            <button key = {i} style={buttonStyle} onClick = {function(){
               self.props.updateUserData(indicator, optionValue)
               setTimeout(function(){
                 self.updateIndex()
@@ -133,7 +138,7 @@ class Questionnary extends Component {
     }
 
     return (
-      <div>
+      <div className="centerOptions">
         <h3>{title}</h3>
         <h2>{question}</h2>
         {img}

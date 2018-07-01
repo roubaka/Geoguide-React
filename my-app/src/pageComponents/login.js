@@ -78,6 +78,7 @@ class Login extends Component {
         i16 : 'undefined',
         i17 : 'undefined',
         i18 : 'undefined',
+        i19 : 'undefined',
         i21 : 'undefined',
         i22 : [0,0,0,0,0,0,0,0,0,0],
         i23 : 'undefined',

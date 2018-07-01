@@ -104,6 +104,19 @@ var questionnaries = [
    "img": ""
  },
  {
+   "indicator": "i19",
+   "type": "unique",
+   "title": "Avant de commencer, nous aimerions en savoir un peu plus sur…",
+   "series": "introduction",
+   "question": "Avez-vous fait des études en Géosciences?",
+   "option1": "Oui",
+   "option2": "Non",
+   "option3": "",
+   "option4": "",
+   "option5": "",
+   "img": ""
+ },
+ {
    "indicator": "i21",
    "type": "unique",
    "title": "Nous sommes enfin arrivés, mais nous avons encore quelques petites questions!",
@@ -292,7 +305,7 @@ var questionnaries = [
    "series": "conclusion",
    "question": "Dans l'histoire de Lausanne, lequel de ces éléments n'a  pas impacté la structure de la ville d'aujourd'hui?",
    "option1": "Les grands projets d'aménagement urbains",
-   "option2": "L'hydrogaphie",
+   "option2": "L'hydrographie",
    "option3": "Le climat",
    "option4": "La topographie",
    "option5": "Aucun; tous ces éléments ont joué un rôle dans la structure de la ville telle que nous la connaissons aujourd'hui",
@@ -346,7 +359,7 @@ var questionnaries = [
    "option1": "Le Palais de Rhumine",
    "option2": "La Cathédrale",
    "option3": "La Tour Bel-Air",
-   "option4": "L'Eglise St-Laurent",
+   "option4": "L'Eglise St-François",
    "option5": "",
    "img": "i41img3.jpg"
  },

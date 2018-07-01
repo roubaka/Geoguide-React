@@ -31,6 +31,7 @@ import myIcons from './data/icons.js';
 import options from './data/options.js';
 import questionnaries from './data/questionnaries.js';
 import stops from './data/stops.js';
+import questions from './data/questions.js';
 import questionStops from './geodata/questionStops.js';
 import stopsData from './data/stops_content_min.js';
 import track from './geodata/track.js';
@@ -55,8 +56,8 @@ var nextQuestionStop = 0;
 
 // Global function for updating indicators list
 var getIndicatorsList = (i) => {
-  indicatorString = questionStops.features[i].properties.indicator;
-  indicatorsList = indicatorString.split(",").map(String);
+  indicatorsList = questions[i].indicator;
+  console.log(indicatorsList);
   return indicatorsList
 }
 
@@ -64,11 +65,12 @@ var getIndicatorsList = (i) => {
 getIndicatorsList(nextQuestionStop);
 
 // Reversing coordinates of questionStops features
-questionStops.features.map(function(stop){
-  var id = stop.properties.id
-  var coords = stop.geometry.coordinates
-  coords.reverse();
-})
+// NB not necessary if variable is suppressed
+// questionStops.features.map(function(stop){
+//   var id = stop.properties.id
+//   var coords = stop.geometry.coordinates
+//   coords.reverse();
+// })
 
 // mapShown variable set to false for reversing coordinates on first rendering
 var mapShown = false;
@@ -150,12 +152,10 @@ class StopContent extends Component{
     var array = [0,1,2,3]
     array = this.shuffleAnswers(array);
     this.setState({quizArray : array})
-    console.log('fzfhg');
     // Cecking localStorage to know if user has already answered this post questions
     // json parse to get the array located
     // If value is different from 0 (equals true or false) it means user has already answered the question, hence change state
     if(JSON.parse(localStorage.getItem('i33'))[this.props.stop-6] != 0){
-      console.log("state");
       this.setState({answeredQuiz : true})
     }
   }
@@ -331,7 +331,7 @@ class PageContent extends Component {
 
     // Transmetting userLocation to global app as state
     self.props.setUserLocation([position.coords.latitude,position.coords.longitude], position.coords.accuracy);
-    console.log([position.coords.latitude,position.coords.longitude]);
+    // console.log([position.coords.latitude,position.coords.longitude]);
 
     // Check for each stop feature if the distance is smaller than 150m to render spot content
     stops.features.forEach(function(stop){
@@ -349,21 +349,21 @@ class PageContent extends Component {
         }
     })
 
-    // Check for each questionStop feature if the distance is smaller than 150m to render questions
-    questionStops.features.forEach(function(stop){
-      // Store coordinates of each points as variable S
-      var s = stop.geometry.coordinates;
-      // Pythagore function - calculate distance betweeen location and every stop
-      var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
-        // If distance, trigger question function
-        // NB default parameter for distance is 0.0002
-          if(d < 0.0002){
-          // Actual stop number
-          if(self.props.content == 'Carte'){
-            self.props.checkUserData(indicatorsList[0])
-          }
-        }
-    })
+    // // Check for each questionStop feature if the distance is smaller than 150m to render questions
+    // questionStops.features.forEach(function(stop){
+    //   // Store coordinates of each points as variable S
+    //   var s = stop.geometry.coordinates;
+    //   // Pythagore function - calculate distance betweeen location and every stop
+    //   var d = Math.pow(Math.pow(s[0] - position.coords.latitude, 2) + Math.pow(s[1] - position.coords.longitude, 2), 0.5);
+    //     // If distance, trigger question function
+    //     // NB default parameter for distance is 0.0002
+    //       if(d < 0.0002){
+    //       // Actual stop number
+    //       if(self.props.content == 'Carte'){
+    //         self.props.checkUserData(indicatorsList[0])
+    //       }
+    //     }
+    // })
   }
 
   // Location error handling
@@ -591,13 +591,23 @@ class Geoguide extends Component {
     // Check for next indicator, if the user has already completed part of the path
     setTimeout(function(){
       var nextIndicator = localStorage.getItem('nextIndicator');
-      var firstQuestions = ['i11','i12','i13','i45']
+      var firstQuestions = getIndicatorsList(0)
       // If next indicator to be checked is still part of the first questions, check it
       if(firstQuestions.indexOf(nextIndicator) != -1){
         self.checkUserData(nextIndicator)
       } else {
         // If indicator does not have to be check on the beginning, go to map
         self.setState({currentPage : 'Carte'})
+        // Setting up next series in questions variable
+        for(var i = 0; i < questions.length; i++){
+          // Saving series into a variable
+          var series = questions[i].indicator
+          // If the current series contains the
+          if(series.indexOf(nextIndicator) != -1){
+            // Save the indicators list according to the position of nextIndicator into questions
+            getIndicatorsList(i)
+          }
+        }
       }
     },1000)
     // In any case define user as logged in when finished
@@ -606,6 +616,7 @@ class Geoguide extends Component {
 
   // Methods getting and setting user data into DB
   checkUserData = (indicator) => {
+    console.log(indicator);
     let indicatorExists = ''
     database.ref('/users').once('value', snap => {
       indicatorExists = snap.child(this.state.userid).val()[indicator];
@@ -622,6 +633,7 @@ class Geoguide extends Component {
   // indicator corresponds to i11, i12 etc. values
   // value corresponds to the value linked to the specific indicator
   updateUserData = (indicator,value) => {
+    console.log(indicator);
     // Saving this's Component into self variable for handling callback
     var self = this
     database.ref('/users').child(this.state.userid).update({
@@ -631,15 +643,34 @@ class Geoguide extends Component {
     var nextIndex = indicatorsList.indexOf(indicator) + 1
     // Get value of the corresponding indicator
     var nextIndicator = indicatorsList[nextIndex]
-    // If next value is finished, go back to map
-    if(nextIndicator == 'finished' || nextIndicator == 'firstlog'){
-      if(nextIndicator == 'finished'){
+    console.log(indicatorsList,nextIndicator);
+    // If next value is finished or firstlog, go back to map
+    if(!isNaN(nextIndicator) || nextIndicator == 'firstlog' || nextIndicator == 'finished'){
+      if(!isNaN(nextIndicator) || nextIndicator == 'finished'){
         self.setState({'currentPage' : 'Carte','renderNavbar':true})
       } else {
+        // Meaning nextIndicator is firstlog, hence show welcome page
         self.setState({'currentPage' : 'Bienvenue','renderNavbar':true})
       }
-      nextQuestionStop++;
-      getIndicatorsList(nextQuestionStop)
+      // Getting the list of the indicators on the next stop
+      // getIndicatorsList(nextQuestionStop)
+      for(var i = 0; i < questions.length; i++){
+        // Saving series into a variable
+        var series = questions[i].indicator
+        // If the current series contains the
+        if(series.indexOf(nextIndicator) != -1){
+          if(isNaN(nextIndicator) == false || nextIndicator == 'firstlog'){
+            if(nextIndicator == 'firstlog'){
+              getIndicatorsList(1)
+            } else {
+              getIndicatorsList((nextIndicator))
+            }
+          } else {
+            // Save the indicators list according to the position of nextIndicator into questions
+            getIndicatorsList(i)
+          }
+        }
+      }
       self.setNexIndicator(indicatorsList[0])
       // Else, set next indicator as indicator to be checked
     } else {
@@ -690,15 +721,30 @@ class Geoguide extends Component {
 
   // Methods handling page changes and rendering
   showMap = () => {
+    this.trackInteraction('Carte','click','render map')
+    // If current stop post number is uneven (impair) show next series of questions
+    if(this.state.currentStop % 2 != 0){
+      // Save nextIndicator value
+      var nextIndicator = localStorage.getItem('nextIndicator')
+      // If currentstop is the last, check last series of questions, beginning with i21
+      if(this.state.currentStop == 15){
+        this.checkUserData('i21')
+        // Else, if the indicator is different from
+      } else if(nextIndicator != 'i21'){
+        this.checkUserData(localStorage.getItem('nextIndicator'))
+      }
+    }
     this.setState({currentPage : 'Carte'})
     this.setState({currentStop : null})
-    this.trackInteraction('Carte','click','render map')
   }
 
   changePage = (e) => {
+    this.trackInteraction(e.target.innerHTML,'click','change page')
+    if(e.target.innerHTML == 'Carte'){
+      this.checkUserData(localStorage.getItem('nextIndicator'))
+    }
     this.setState({currentPage : e.target.innerHTML})
     this.setState({currentStop : null})
-    this.trackInteraction(e.target.innerHTML,'click','change page')
   }
 
   // Handling rendering for navbar
@@ -792,7 +838,7 @@ class Geoguide extends Component {
             // Passing methods on handling interaction between user data and database
             updateUserData={this.updateUserData} nextIndicator={this.state.nextIndicator} checkUserData={this.checkUserData} setUserLocation={this.setUserLocation}
             // Pasing methods about changing pages and rendering
-            showMap={this.showMap} content={this.state.currentPage} onClick={this.showSpotContent}renderNavbar ={this.renderNavbar} reload={this.reload}
+            showMap={this.showMap} content={this.state.currentPage} onClick={this.showSpotContent} renderNavbar ={this.renderNavbar} reload={this.reload}
             // Passing methods about map
             handleClick={this.handleMarkerClick} stop={this.state.currentStop} onStopReached={this.showSpotContent} trackInteraction={this.trackInteraction}
           />

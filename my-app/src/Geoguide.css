@@ -148,6 +148,14 @@ tr, td{
   padding: 0px 0px 600px 0px;
 }
 
+.centerOptions{
+  text-align: center;
+}
+
+button{
+  outline: none;
+}
+
 /* .footer {
     width: 100%;
     position: relative;

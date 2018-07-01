@@ -19,7 +19,7 @@ class Welcome extends Component {
           <br/>
           Partez à la recherche des postes qui se cachent le long du parcours entre Sauvabelin et le campus de l'UNIL. Les 30 postes illustrés traitent de nombreux sujets et vous pourrez tester vos connaissances avec de petits Quiz.
           <br/>
-          Pour commencer allez sur la carte et rendez vous au départ de la marche start icon. Une fois sur place, suivez le chemin (ligne rouge) à la recherche d'un poste. Vous verrez, il se manifeste tout seul!
+          Pour commencer allez sur la carte et rendez vous au départ de la marche. Une fois sur place, suivez le chemin (ligne rouge) à la recherche d'un poste. Vous verrez, il se manifeste tout seul!
         </p>
         <button onClick={this.props.showMap}>Commencer le parcours</button>
       </div>
